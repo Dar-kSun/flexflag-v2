@@ -56,3 +56,22 @@ def test_pocket_from_local_pdb_file():
     assert out.exit_code == 0, out.output
     assert "AP5 in 1ake_A chain A" in out.output
     assert "Pocket-change risk" in out.output
+
+
+def test_wrong_protein_pdb_is_rejected():
+    # Trypsin structure given for adenylate kinase: must not produce a report.
+    out = CliRunner().invoke(app, ["check", "P69441", "--from-pdb", str(FIX / "3ptb_A.cif")])
+    assert out.exit_code == 1
+    assert "no chain in 3ptb_A matches P69441" in out.output
+
+
+def test_pdb_without_ligand_is_a_clean_error():
+    out = CliRunner().invoke(app, ["check", "P69441", "--from-pdb", str(FIX / "4ake_A.cif")])
+    assert out.exit_code == 1
+    assert "no small-molecule ligand" in out.output
+
+
+def test_unreadable_residues_are_a_clean_error():
+    out = CliRunner().invoke(app, ["check", "P00698", "--residues", "12,abc"])
+    assert out.exit_code == 1
+    assert "cannot read residue 'abc'" in out.output

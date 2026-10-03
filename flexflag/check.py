@@ -32,25 +32,55 @@ class Report:
     probability: float | None = None
 
 
+MIN_CHAIN_IDENTITY = 0.9  # a PDB chain must match the UniProt sequence this well
+
+
 def parse_residues(spec: str) -> list[int]:
     """'13,31,35-38' -> [13, 31, 35, 36, 37, 38]."""
     out = set()
     for part in spec.replace(" ", "").split(","):
         if not part:
             continue
-        if "-" in part:
-            lo, hi = part.split("-", 1)
-            out.update(range(int(lo), int(hi) + 1))
-        else:
-            out.add(int(part))
+        try:
+            if "-" in part:
+                lo, hi = part.split("-", 1)
+                out.update(range(int(lo), int(hi) + 1))
+            else:
+                out.add(int(part))
+        except ValueError:
+            raise ValueError(f"cannot read residue '{part}'; use e.g. 13,31,35-38") from None
+    if not out:
+        raise ValueError("no residues given")
     return sorted(out)
 
 
+def _afdb(fn, uniprot: str):
+    """Call an AlphaFold DB accessor, turning HTTP failures into a plain LookupError."""
+    import requests
+
+    from flexflag.data.cache import NotFound
+
+    try:
+        return fn(uniprot)
+    except (NotFound, requests.HTTPError):
+        raise LookupError(
+            f"{uniprot} not found in AlphaFold DB (is it a UniProt accession?)"
+        ) from None
+    except requests.RequestException as e:
+        raise LookupError(f"could not reach AlphaFold DB: {e}") from None
+
+
 def pocket_from_pdb(uniprot: str, pdb: str) -> tuple[list[int], str]:
-    """UniProt positions within SITE_CUTOFF_A of the main ligand in a PDB entry or file."""
+    """UniProt positions within SITE_CUTOFF_A of the main ligand in a PDB entry or file.
+
+    Only chains whose sequence matches the UniProt entry (>= MIN_CHAIN_IDENTITY of
+    their residues aligned identically) are used, so a wrong PDB ID is an error.
+    """
     # Imported here: the whole-protein feature pipeline must never touch structure code.
     from flexflag.data.apoholo import structure_path
+    from flexflag.data.cache import NotFound
     from flexflag.labels import (
+        LabelError,
         align_indices,
         find_ligand,
         one_letter,
@@ -59,23 +89,43 @@ def pocket_from_pdb(uniprot: str, pdb: str) -> tuple[list[int], str]:
         site_residues,
     )
 
-    path = Path(pdb) if Path(pdb).exists() else structure_path(pdb)
+    seq = list(_afdb(alphafold.entry_info, uniprot)["sequence"])
+    try:
+        path = Path(pdb) if Path(pdb).exists() else structure_path(pdb)
+    except NotFound:
+        raise ValueError(f"PDB entry '{pdb}' not found") from None
     model = read_model(path)
-    chains = [ch.name for ch in model if protein_residues(ch)]
-    ligand, _, chain = find_ligand(model, chains)
-    res = protein_residues(model.find_chain(chain))
+    matches, best = {}, 0.0
+    for ch in model:
+        res = protein_residues(ch)
+        if len(res) < 10:
+            continue
+        mapping = align_indices(one_letter(res), seq)
+        identity = len(mapping) / len(res)
+        best = max(best, identity)
+        if identity >= MIN_CHAIN_IDENTITY:
+            matches[ch.name] = (res, mapping)
+    name = path.name.split(".")[0]
+    if not matches:
+        raise ValueError(
+            f"no chain in {name} matches {uniprot} (best sequence match {best:.0%}); "
+            "is this the right PDB entry?"
+        )
+    try:
+        ligand, _, chain = find_ligand(model, list(matches))
+    except LabelError as e:
+        raise ValueError(f"{name}: {e}") from None
+    res, mapping = matches[chain]
     site = site_residues(res, ligand, SITE_CUTOFF_A)
-    seq = alphafold.entry_info(uniprot)["sequence"]
-    mapping = align_indices(one_letter(res), list(seq))
     positions = sorted(mapping[i] + 1 for i in site if i in mapping)
     if len(positions) < 3:
         raise ValueError(f"only {len(positions)} pocket residues map onto {uniprot}")
-    return positions, f"{ligand.name} in {path.name.split('.')[0]} chain {chain}"
+    return positions, f"{ligand.name} in {name} chain {chain}"
 
 
 def check(uniprot: str, pocket: list[int] | None = None, source: str | None = None) -> Report:
-    info = alphafold.entry_info(uniprot)
-    plddt = alphafold.plddt(uniprot)
+    info = _afdb(alphafold.entry_info, uniprot)
+    plddt = _afdb(alphafold.plddt, uniprot)
     rep = Report(
         uniprot=uniprot,
         description=info["description"],
