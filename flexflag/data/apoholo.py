@@ -61,3 +61,18 @@ def uniprot_for_chain(pdb_id: str, chain: str) -> str | None:
         if any(m["chain_id"] == chain for m in entry["mappings"]):
             return acc
     return None
+
+
+SIFTS_TSV = "https://ftp.ebi.ac.uk/pub/databases/msd/sifts/flatfiles/tsv/pdb_chain_uniprot.tsv.gz"
+
+
+def sifts_chain_map() -> dict[tuple[str, str], str]:
+    """(pdb_id, author chain) -> UniProt accession, from the SIFTS bulk file.
+
+    Chains mapping to several accessions (chimeras) are left out.
+    """
+    path = fetch(SIFTS_TSV, "sifts", "pdb_chain_uniprot.tsv.gz")
+    df = pd.read_csv(path, sep="\t", comment="#", usecols=["PDB", "CHAIN", "SP_PRIMARY"])
+    df = df.drop_duplicates(["PDB", "CHAIN", "SP_PRIMARY"])
+    df = df[~df.duplicated(["PDB", "CHAIN"], keep=False)]
+    return dict(zip(zip(df.PDB, df.CHAIN.astype(str), strict=False), df.SP_PRIMARY, strict=False))

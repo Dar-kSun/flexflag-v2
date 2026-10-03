@@ -31,3 +31,14 @@ def pae(uniprot: str) -> np.ndarray:
     doc = json.loads(path.read_text())
     doc = doc[0] if isinstance(doc, list) else doc
     return np.asarray(doc["predicted_aligned_error"], dtype=float)
+
+
+def entry_info(uniprot: str) -> dict:
+    """Sequence and annotation for the F1 model (sequence is what AlphaFold predicted)."""
+    e = _entry(uniprot)
+    return {
+        "sequence": e["sequence"],
+        "organism": e.get("organismScientificName"),
+        "description": e.get("uniprotDescription"),
+        "af_version": e.get("latestVersion"),
+    }
