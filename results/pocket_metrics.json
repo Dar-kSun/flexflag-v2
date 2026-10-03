@@ -514,5 +514,22 @@
         }
       }
     }
+  },
+  "size_tertiles": {
+    "small": {
+      "n": 323,
+      "n_positive": 25,
+      "auroc_low_plddt": 0.6848322147651007
+    },
+    "medium": {
+      "n": 303,
+      "n_positive": 29,
+      "auroc_low_plddt": 0.7381072237603826
+    },
+    "large": {
+      "n": 303,
+      "n_positive": 47,
+      "auroc_low_plddt": 0.6519281914893618
+    }
   }
 }

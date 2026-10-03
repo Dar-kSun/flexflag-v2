@@ -39,3 +39,9 @@ Pocket model − pocket baseline, AUROC: +0.029 [-0.034, +0.091]
 | Confound reference: site size alone (not a usable model) | 0.659 [0.561, 0.745] | 0.104 [0.060, 0.196] | 0.003 [0.002, 0.018] | 0.039 [0.028, 0.050] |
 
 Pocket model − pocket baseline, AUROC: +0.086 [-0.008, +0.191]
+
+### Pocket pLDDT within pocket-size tertiles (> 2 Å, in-sample)
+
+- small pockets (3–14 residues, n = 323, 25 moving): AUROC 0.685
+- medium pockets (15–19 residues, n = 303, 29 moving): AUROC 0.738
+- large pockets (20–47 residues, n = 303, 47 moving): AUROC 0.652

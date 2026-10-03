@@ -1,197 +1,268 @@
 # flexflag
 
-**Can you tell, before docking, whether a protein's binding site will change shape?**
-Across 933 proteins that the PDB has solved both empty (apo) and ligand-bound (holo),
-**11% have binding sites that move more than 2 Å** between the two states. AlphaFold's
-own confidence score, pLDDT, **does not predict which ones** (AUROC 0.52, CI spanning
-chance). A small model on free AlphaFold DB and sequence features does better, but only
-modestly (AUROC 0.59).
+**Before you dock into an AlphaFold structure, check whether the pocket holds still.**
+On 833 protein structures released *after* AlphaFold2's training cutoff, pockets in the
+lowest fifth by **pocket pLDDT** reshaped by more than 2 Å between empty and
+ligand-bound **13× as often** as pockets in the top fifth (24% vs 1.8%). The rule was
+fixed on a separate dataset beforehand. **Whole-protein pLDDT, the usual check, is at
+chance** (AUROC 0.44 vs 0.76).
 
-> **Status: v0.1, in active development.** The dataset, labels, cluster-aware
-> evaluation and the baseline comparison are done and reproducible. The
-> `flexflag check <UniProt>` CLI is **not built yet** (see [Status](#status)).
+![Risk of pocket change by pocket pLDDT band, discovery and external sets](results/pocket_plddt_bands.png)
 
-![Binding-site AUROC: mean pLDDT vs full model at four thresholds](results/baseline_vs_model.png)
+> **Status: v0.1.0.** Dataset, labels, cluster-aware evaluation, the pLDDT baseline
+> comparison, pre-declared external validation and the `flexflag check` CLI are done
+> and reproducible. See [Status](#status) for what is scoped out.
 
-## Why this matters
+## What this answers, and why
 
-Docking screens molecules against one protein structure, usually an AlphaFold
-prediction. But proteins flex, and pockets can reshape when a ligand binds. pLDDT
-measures how confident AlphaFold is in the shape it returned. It says nothing about
-whether the protein has *other* shapes. Methods that sample alternative conformations
-exist (MD, AlphaFold2-RAVE, MSA subsampling) but are expensive. flexflag asks a cheaper
-question that comes *before* those methods: **is this target likely to change shape at
-the binding site?** It flags risk. It does not predict the alternative conformation.
+Docking screens molecules against one protein structure, increasingly an AlphaFold
+prediction. Proteins flex, and binding pockets can reshape when a ligand binds.
+AlphaFold returns one frame, and its confidence score (pLDDT) says how sure it is of
+*that* frame, not whether the protein has others. Ensemble methods (MD,
+AlphaFold2-RAVE, MSA subsampling) can sample other states but are expensive.
+**flexflag is the cheap check in front of them:** is this pocket likely to change shape?
+It flags risk. It does not predict the other conformation.
+
+## Quickstart
+
+```bash
+pip install -e .            # Python ≥ 3.11
+flexflag check Q9HWI0 --from-pdb 8evw        # pocket = residues near the ligand in 8EVW
+flexflag check P69441 --residues 13,31,35-38  # or give pocket residues (UniProt numbering)
+```
+
+```
+Q9HWI0  D-alanine--D-alanine ligase A  (346 residues)
+
+Pocket: 30 residues (ATP in 8evw chain A)
+Pocket mean pLDDT: 84.5   (whole protein: 89.3)
+
+Pocket-change risk (> 2 Å, empty vs bound): HIGHEST
+  band 1 of 5 by pocket pLDDT (< 91.8)
+  observed in this band: 21% of 186 APObind pockets,
+                         24% of 139 unseen PDB-2019+ pockets
+  smoothed estimate: 22%  (base rate about 10%)
+
+Why:
+- Pocket pLDDT is in the lowest 40% of pockets studied. Even above 90 ('very
+  high' in AlphaFold's usual reading), lower pocket pLDDT marks more change.
+- 5 pocket residue(s) have pLDDT < 70.
+- When pockets do move, the AlphaFold model resembled the bound (holo) state in
+  69% of unseen cases. If you need the empty state, one
+  AlphaFold structure is likely the wrong one.
+...
+```
+
+This example's pocket does move (5.7 Å, 8EVW vs 8EVV). It comes from the evaluation
+set, so it illustrates the method rather than being a new prediction. The tool also
+misses cases: **adenylate kinase**, the textbook induced-fit enzyme, moves 6 Å but has a
+confident pocket (pLDDT 94.7) and scores "moderate". Pocket pLDDT does not see rigid
+domains closing over a well-predicted pocket.
+
+Without a pocket, `flexflag check <UniProt>` reports whole-protein pLDDT and declines to
+flag, because whole-protein pLDDT carries no signal (below).
 
 ## Results
 
-All numbers come from `python scripts/02_train_eval.py`. n = 933 proteins in **680
-sequence clusters** (MMseqs2, 30% identity). Evaluation uses 5-fold cross-validation
-where every cluster sits entirely in one fold (asserted in code), and 95% CIs come from
-1,000 bootstrap resamples **of clusters**, not of proteins.
+Label: binding-site Cα RMSD between apo and holo after superposing the site, > 2 Å =
+"large change" (other thresholds below). Two independent datasets:
 
-### The comparison that defines this repo: pLDDT alone vs the full model
-
-Label: binding-site Cα RMSD > 2 Å (102 positives, 10.9% base rate).
-
-| Model | AUROC | AUPRC | ECE | Brier |
+| | Source | Proteins | Moving > 2 Å | Evaluation |
 |---|---|---|---|---|
-| Baseline: mean pLDDT | 0.521 [0.461, 0.578] | 0.108 [0.085, 0.139] | 0.005 | 0.097 |
-| Baseline: fraction pLDDT < 70 | 0.551 [0.492, 0.611] | 0.126 [0.097, 0.172] | 0.004 | 0.097 |
-| Logistic regression, all features | 0.618 [0.564, 0.673] | 0.145 [0.114, 0.190] | 0.020 | 0.098 |
-| **Full model** (gradient boosting, calibrated) | **0.592** [0.529, 0.655] | **0.169** [0.123, 0.250] | 0.005 | 0.096 |
+| **Discovery** | APObind (PDBbind v2019) | 929 | 101 (10.9%) | 5-fold CV grouped by 30%-identity clusters |
+| **External** | PDB-2019+ (built from RCSB + SIFTS) | 833 | 84 (10.1%) | Models frozen on discovery, applied unchanged |
 
-Full model minus mean-pLDDT baseline (paired cluster bootstrap): **AUROC +0.073
-[+0.002, +0.142], AUPRC +0.067 [+0.020, +0.133].**
+Every holo structure in the external set was released after 2019-01-01, so after
+AlphaFold2's training cutoff (2018-04-30) and after PDBbind v2019. All CIs are 95%
+cluster bootstraps (clusters resampled, not proteins).
 
-**What this says, plainly:**
+### 1. Whole-protein pLDDT does not predict pocket change
 
-1. **pLDDT is not a binding-site flexibility signal.** Mean pLDDT scores at chance at
-   every threshold tested. A high-confidence AlphaFold model is no less likely to have a
-   pocket that reshapes on binding. If anything, the effect runs slightly the other
-   way: proteins with fewer low-confidence residues move a little *more* (see
-   [findings](docs/findings.md)).
-2. **The full model beats pLDDT, but the gain is modest.** Its lower CI bound at 2 Å is
-   barely above zero. In practice: proteins in the model's **top fifth change shape
-   16.6% of the time vs 8.0% in its bottom fifth**, about 2× enrichment. For pLDDT, the
-   same split gives 9.6% vs 7.0%.
-3. **This is not yet a useful standalone flag.** Out-of-fold predictions only span
-   5–26%, and the Brier score (0.096) is barely below always guessing the base rate
-   (0.097). The low calibration error (ECE 0.005) is real but cheap: a model that stays
-   close to the base rate is easy to calibrate. There is no confident "high-risk" band
-   yet.
-4. **The PAE "hinge" features, expected to help most, did not.** Most of the signal
-   comes from sequence composition (cysteine, polar and hydrophobic fractions). That
-   likely reflects protein *class*, e.g. disulfide-rich secreted enzymes are rigid,
-   rather than a flexibility mechanism. See [findings](docs/findings.md).
+| | Discovery (CV) | External (frozen) |
+|---|---|---|
+| Whole-protein mean pLDDT, AUROC | 0.52 [0.46, 0.58] | **0.44** [0.38, 0.50] |
 
-A plain logistic regression on the same features matches the boosted model (better
-AUROC, worse AUPRC, overlapping CIs). So the gain comes from the features, not from
-model complexity.
+A high-confidence AlphaFold model is no less likely to have a pocket that reshapes.
+This is the field's default heuristic, and it fails at every threshold tested.
+v0.1 tried richer whole-protein features (PAE inter-domain blocks, sequence) and got
+AUROC 0.59 in CV. The gain was modest and mostly a protein-family proxy (see
+[findings](docs/findings.md)).
 
-### Sensitivity to the "large change" threshold
+### 2. pLDDT at the pocket does, and the result replicates on unseen structures
 
-![Calibration at 2 Å](results/calibration.png)
+| Model (2 Å) | Discovery AUROC (CV) | External AUROC (frozen) | External AUPRC |
+|---|---|---|---|
+| Whole-protein mean pLDDT | 0.521 [0.461, 0.578] | 0.440 [0.379, 0.503] | 0.086 |
+| **Pocket mean pLDDT** (one number) | **0.686** [0.630, 0.739] | **0.763** [0.710, 0.811] | 0.237 |
+| Pocket model (pocket + whole-protein features, boosting) | 0.716 [0.655, 0.767] | 0.791 [0.736, 0.840] | 0.344 |
+| *Confound reference: pocket size alone* | *0.614* | — | — |
 
-| Threshold | Positives | Mean pLDDT AUROC | Full model AUROC | Full − pLDDT (95% CI) |
-|---|---|---|---|---|
-| > 1 Å | 218 (23.4%) | 0.461 | 0.567 | +0.106 [+0.042, +0.170] |
-| > 1.5 Å | 145 (15.5%) | 0.467 | 0.580 | +0.113 [+0.049, +0.173] |
-| **> 2 Å** | 102 (10.9%) | 0.521 | 0.592 | +0.073 [+0.002, +0.142] |
-| > 3 Å | 38 (4.1%) | 0.498 | 0.612 | +0.114 [+0.012, +0.221] |
+- **External gain of pocket pLDDT over whole-protein pLDDT: +0.32 AUROC
+  [+0.22, +0.42].**
+- **The simple heuristic does most of the work.** The 29-feature pocket model adds
+  ~0.03 AUROC over pocket pLDDT alone, with overlapping CIs on both datasets. So the
+  CLI ships the one-number rule.
+- **The hardest test:** 480 external proteins with **no** discovery-set protein in the
+  same 30% sequence cluster. Pocket pLDDT scores AUROC **0.714** [0.640, 0.785];
+  whole-protein pLDDT scores 0.481.
+- **It is not a pocket-size effect.** Within small, medium and large pockets
+  separately, pocket pLDDT still scores AUROC 0.65–0.74 (discovery). Pocket size is
+  never a feature. (`results/pocket_metrics.md`)
+- **Calibration:** the frozen rule's external ECE is 0.047. Its band rates are
+  reported directly rather than relying on the fitted curve.
 
-The qualitative result holds at every threshold: pLDDT is near chance, and the model is
-modestly but consistently better. Full tables with CIs for every metric are in
-[`results/metrics.md`](results/metrics.md).
+Threshold sensitivity, pocket pLDDT (frozen), external set:
 
-![Distribution of binding-site change](results/site_rmsd_distribution.png)
+| Threshold | Positives | Whole-protein pLDDT | Pocket pLDDT |
+|---|---|---|---|
+| > 1 Å | 202 | 0.569 | 0.733 [0.696, 0.769] |
+| > 1.5 Å | 122 | 0.434 | 0.755 [0.713, 0.796] |
+| **> 2 Å** | 84 | 0.440 | **0.763** [0.710, 0.811] |
+| > 3 Å | 35 | 0.449 | 0.707 [0.618, 0.790] |
+
+Risk by pocket-pLDDT band (edges fixed on the discovery set; the figure above):
+
+| Pocket pLDDT | Discovery: moving > 2 Å | External: moving > 2 Å |
+|---|---|---|
+| < 91.8 | 21.0% (39/186) | 23.7% (33/139) |
+| 91.8–94.6 | 13.4% (25/186) | 18.5% (27/146) |
+| 94.6–96.4 | 10.3% (19/185) | 9.2% (15/163) |
+| 96.4–97.9 | 7.0% (13/186) | 2.8% (6/215) |
+| > 97.9 | 2.7% (5/186) | 1.8% (3/170) |
+
+Nearly all these pockets are "very high confidence" by the usual reading of pLDDT (> 90).
+**Within that range, the exact value still matters.**
+
+### 3. When a pocket moves, AlphaFold usually hands you the bound shape, confidently
+
+For each protein, the AlphaFold DB model's pocket was compared with both crystal
+structures (same residues, site-superposed Cα RMSD):
+
+| Moving pockets (> 2 Å) | n | AlphaFold closer to holo | Median AF–holo | Median AF–apo | Pocket pLDDT > 90 |
+|---|---|---|---|---|---|
+| Discovery | 101 | 80% | 0.60 Å | 2.47 Å | 71% |
+| **External** (holo never seen by AlphaFold2) | 84 | **69%** | 0.92 Å | 2.54 Å | 69% |
+
+AlphaFold's preference for the bound-like pocket holds on holo structures it cannot
+have memorised. It is weaker there (69% vs 80%), so memorisation may explain part of
+the discovery-set figure. It holds whether the apo structure is old (70%, n = 40) or
+new (68%, n = 44). In practice: docking hits found in an AlphaFold pocket may look
+better than the empty protein supports. If you need the empty or cryptic state, one
+AlphaFold model is likely the wrong structure, and AlphaFold's confidence won't warn you.
+
+### How these analyses were kept honest
+
+The pocket analyses and the external validation were **written down and committed
+before they were run**: [`docs/plan-v0.2-pocket.md`](docs/plan-v0.2-pocket.md)
+(commit `a301a49`) and [`docs/plan-v0.3-external.md`](docs/plan-v0.3-external.md)
+(commit `ad7767c`). The git history shows each plan before its results. One check was
+added afterwards and is labelled as such: splitting the AlphaFold-state analysis by
+release date. The v0.1 whole-protein result, a mostly negative one, is kept as it was.
 
 ## How the label is defined
 
-For each apo–holo pair (`flexflag/labels.py`):
+For each apo–holo pair (`flexflag/labels.py`, tested in `tests/test_labels.py`):
 
 1. Take the first model, drop hydrogens and waters, and keep the first altloc.
 2. **Ligand:** the non-polymer, non-additive residue (≥ 6 heavy atoms) with the most
-   heavy atoms within 5 Å of the holo protein chain. Buffers, glycans and ions are
-   excluded. Peptide ligands are out of scope.
-3. **Binding site:** holo-chain residues with any heavy atom within **5 Å** of the
-   ligand.
-4. Match holo and apo residues by global sequence alignment, keeping identical residues
-   only. This handles different numbering and chain IDs (tested).
-5. **Label:** Cα RMSD of the site after Kabsch superposition **on the site itself**.
-   This measures how much the pocket deforms, not how far it moves with the rest of the
-   protein.
-6. Large change = site RMSD > 2 Å. Results at 1, 1.5 and 3 Å are shown above.
+   heavy atoms within 5 Å of the protein. Buffers, glycans and ions are excluded;
+   peptide ligands are out of scope.
+3. **Pocket:** residues with any heavy atom within **5 Å** of the ligand.
+4. Match apo and holo residues by sequence alignment (handles renumbering and chain
+   renaming, which is tested).
+5. **Label:** Cα RMSD of the pocket after superposing the pocket itself, so it measures
+   deformation rather than whole-protein motion. Large change = > 2 Å.
 
-Checks: adenylate kinase (lid closes over Ap5A) scores 6.1 Å and trypsin + benzamidine
-scores 0.16 Å (both in `tests/`). Our binding sites fall 96–100% inside APObind's own
-site lists, so we pick the same pocket ([data-choice.md](docs/data-choice.md)).
+Checks: adenylate kinase scores 6.1 Å and trypsin + benzamidine 0.16 Å. On APObind, our
+pockets fall 96–100% inside APObind's own site lists.
+
+**What the pocket features may use:** only the pocket's residue *positions*, as at
+docking time. At docking you know where you are docking. In this evaluation those
+positions come from the holo ligand. No holo coordinates, ligand identity, ligand size
+or pocket size enter any feature. Pocket pLDDT is read from AlphaFold DB.
+`tests/test_no_holo_leakage.py` checks that the whole-protein pipeline never reads a PDB
+structure.
 
 ## Data
 
-- **Pairs:** [APObind](https://github.com/devalab/Apobind) (apo partners for PDBbind
-  v2019 complexes). Only the pair identifiers are used. Every structure is re-fetched
-  from RCSB, and residues are mapped to UniProt with SIFTS.
-- **One pair per protein:** APObind's 12,267 pairs cover only ~1,200 proteins (one empty
-  protease can pair with dozens of complexes). Features are per protein, so we keep the
-  best-matched pair per UniProt accession. Otherwise heavily-studied proteins would
-  dominate the results.
-- **Filters:** 12,267 pairs → 7,687 after quality filters (APObind TM-score ≥ 0.5,
-  sequence identity and coverage ≥ 0.9, crystal apo, same UniProt on both sides) →
-  1,183 proteins → **933 labelled**. Every drop and its reason is in
-  [`results/dropped.csv`](results/dropped.csv). See [findings](docs/findings.md) for
-  the breakdown.
-- **Features** (`flexflag/features/`): AlphaFold DB only, plus the sequence AlphaFold
-  modelled. pLDDT statistics (mean, min, std, fraction < 70 and < 50, longest
-  low-confidence run), PAE statistics (mean, fraction > 15 Å, PAE-derived domain count,
-  intra- and inter-domain PAE), and sequence composition, length and low complexity.
-  **Nothing from the holo structure or the ligand enters the features.**
-  `tests/test_no_holo_leakage.py` enforces this.
+- **Discovery: [APObind](https://github.com/devalab/Apobind).** 12,267 pairs →
+  quality filters (APObind TM-score ≥ 0.5, identity and coverage ≥ 0.9, crystal apo,
+  same UniProt on both sides) → 1,183 proteins → 933 labelled → 929 with the pocket
+  mapped onto AlphaFold. One pair per protein, so heavily studied proteins don't
+  dominate.
+- **External: PDB-2019+** (`scripts/05_external_dataset.py`). Holo: X-ray ≤ 2.5 Å, one
+  protein entity, a ligand of ≥ 150 Da, released ≥ 2019-01-01 (43,016 search hits;
+  40,469 map to one UniProt in SIFTS). Apo: X-ray ≤ 2.5 Å, one protein entity, no
+  non-polymer entities at all (18,190 hits; 16,821 mapped). Pairs
+  need the same single UniProt and ≥ 90% overlapping UniProt ranges → 971 proteins →
+  833 labelled.
+- Every dropped pair and protein is listed with its reason: `results/dropped.csv`,
+  `results/external/dropped.csv`.
+- Structures come from RCSB, UniProt mapping from SIFTS, and predictions and confidence
+  from AlphaFold DB (v6 files).
 
 ## Reproduce
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -e ".[dev]"   # Windows: .venv\Scripts\
-pytest                                    # 12 tests, offline, about 2 s
+pytest                                  # 18 tests, offline, a few seconds
 
-# One manual step: download apobind_all.csv from the APObind data link
-# (https://github.com/devalab/Apobind) into data/. The committed data/apobind_pairs.csv
-# already holds the pair list, so this is only needed to regenerate it.
-python scripts/00_feasibility.py          # 10 pairs end to end, with timings
-python scripts/01_build_dataset.py        # ~15 min, ~1.3 GB downloaded to data/cache/
-python scripts/02_train_eval.py           # needs MMseqs2 on PATH (or FLEXFLAG_MMSEQS)
+python scripts/00_feasibility.py        # 10 APObind pairs end to end, with timings
+python scripts/01_build_dataset.py      # discovery set, ~15 min, ~1.3 GB cache in data/cache/
+python scripts/02_train_eval.py         # v0.1 whole-protein comparison (needs MMseqs2)
+python scripts/03_pocket.py             # AlphaFold vs apo/holo at the pocket; pocket features
+python scripts/04_pocket_model.py       # pocket-level comparison, discovery CV
+python scripts/05_external_dataset.py   # external PDB-2019+ set, ~10 min
+python scripts/06_external_eval.py      # frozen rule on the external set + band figure
+python scripts/07_export_rule.py        # writes flexflag/rule.json for the CLI
 ```
 
-**MMseqs2 on Windows:** unzip the `mmseqs-win64` release to a path without spaces
-(default looked up: `%LOCALAPPDATA%\flexflag\mmseqs`), then run
-`mmseqs\bin\busybox.exe --install <that bin folder>` once. This installs the helper
-tools as hard links, which needs no admin rights.
+`data/apobind_pairs.csv` (the APObind pair list) is committed. Regenerating it from
+APObind's `apobind_all.csv` needs one manual browser download (see
+[data-choice](docs/data-choice.md)). Results are deterministic (seed 0), and the
+committed `results/` match the numbers above.
 
-Results are deterministic (fixed seed 0). The committed `results/` reproduce the numbers
-above.
+**MMseqs2 on Windows:** unzip the `mmseqs-win64` release to a path without spaces
+(default looked up: `%LOCALAPPDATA%\flexflag\mmseqs`). Then run
+`mmseqs\bin\busybox.exe --install <that bin folder>` once; it installs the helpers as
+hard links, which needs no admin rights. Or set `FLEXFLAG_MMSEQS`.
 
 ## Limitations
 
-- **Dataset size and source.** 933 proteins (680 clusters) and 102 positives at 2 Å.
-  All come from PDBbind/APObind, so the set is biased toward well-studied,
-  drug-discovery targets (40% human) and toward ligands that crystallise. Many families
-  are missing.
-- **Families that drop out.** Viral polyproteins (e.g. HIV-1 protease) have no
-  AlphaFold DB model. Proteins over 1,500 residues were skipped. Peptide ligands (251
-  pairs) are out of scope.
-- **One pair per protein.** A protein's label comes from one apo–holo pair and one
-  ligand. A different ligand may move the same pocket differently.
+- **Moderate discrimination.** AUROC 0.76 means a useful prior, not a verdict. Even in
+  the riskiest band, three in four pockets do *not* move more than 2 Å.
+- **Misses confident domain closures.** Adenylate kinase is the example. Hinge motions
+  that close rigid, well-predicted domains over a pocket are invisible to pLDDT.
+- **The pocket must be supplied.** The flag is per pocket, not per protein. A pocket
+  that only forms on binding (cryptic) may be hard to specify.
+- **Datasets.** Both lean toward well-studied, crystallisable drug targets (30–40%
+  human). Viral polyproteins (no AlphaFold DB model), proteins over 1,500 residues and
+  peptide ligands are excluded. The external set's "strict apo" rule (no ligands, ions
+  or buffers at all) is conservative, and its holo ligands include cofactors.
+- **One pair per protein.** A different ligand may move the same pocket differently.
+- **The label is backbone-only (Cα).** Side-chain rearrangements, which also break
+  docking, are not captured. Larger pockets score somewhat larger RMSDs; the band
+  results hold within pocket-size tertiles.
 - **Crystal artefacts.** Crystal packing, different constructs and resolution
-  differences between the apo and holo entries can create or hide apparent motion.
-- **The label measures backbone (Cα) pocket deformation only.** Side-chain
-  rearrangements, which also matter for docking, are not captured. Larger sites tend to
-  score larger RMSDs (site size alone gives AUROC 0.61 on the label). Site size is not
-  a feature, but this is a property of the label.
-- **What "large change" means for docking.** A 2 Å site deformation is a reasonable
-  sign that one rigid structure may mislead docking. It does not mean docking will
-  fail, and a small RMSD does not guarantee success.
-- **Clustering at 30% identity is a standard, not a guarantee.** Remote homologs below
-  30% can still share folds.
-- **Hyperparameters were fixed, not tuned.** The models are deliberately small for
-  ~900 examples. Tuning might help a little; it would not change the pLDDT conclusion.
+  differences can create or hide apparent motion.
+- **Clustering at 30% identity** is the standard but does not remove all remote
+  homology.
 - This repo flags risk. **It does not predict conformations, run docking, or make any
   claim about drug efficacy or clinical outcomes.**
 
 ## Status
 
-**v0.1, active development.** Done: data curation, labels (tested), features, cluster
-splits with a leakage assertion, the baseline comparison, calibration, and threshold
-sensitivity.
+**v0.1.0.** Done: both datasets, labels, cluster-aware CV with a leakage assertion,
+pLDDT baselines, the pocket-level analysis, pre-declared external validation,
+calibration, threshold sensitivity, and the CLI.
 
-Not done yet, and why:
+Next:
 
-- **`flexflag check <UniProt>` CLI.** The plan was to output a risk band. With
-  predictions spanning only 5–26%, risk bands would overstate what the model knows.
-  Next step: ship it with the calibrated probability and the base rate, not "high" or
-  "low".
-- **SHAP explanations, family-level analysis, pocket-level flags** (v0.2).
-- **Better features:** pocket-level features from the AlphaFold model itself (no holo
-  information), MSA depth, and Pfam annotations.
+- Pockets predicted on the AlphaFold model itself (e.g. fpocket or P2Rank), so the tool
+  needs no ligand at all.
+- Side-chain-aware labels, and labels aggregated over several ligands per protein.
+- SHAP explanations for the pocket model, and family-level analysis.
+- Features aimed at hinge closures (the adenylate kinase failure mode).
 
 ## Citations
 
@@ -206,6 +277,8 @@ Not done yet, and why:
   scoring functions (PDBbind). *Accounts of Chemical Research* 50, 302–309.
 - Dana et al. (2019). SIFTS: updated Structure Integration with Function, Taxonomy and
   Sequences resource. *Nucleic Acids Research* 47, D482–D489.
+- Burley et al. (2023). RCSB Protein Data Bank. *Nucleic Acids Research* 51,
+  D488–D508.
 - Steinegger & Söding (2017). MMseqs2 enables sensitive protein sequence searching for
   the analysis of massive data sets. *Nature Biotechnology* 35, 1026–1028.
 - Vani, Aranganathan, Wang & Tiwary (2023). AlphaFold2-RAVE: from sequence to Boltzmann

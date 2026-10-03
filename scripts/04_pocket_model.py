@@ -11,6 +11,7 @@ import json
 
 import numpy as np
 import pandas as pd
+from sklearn.metrics import roc_auc_score
 
 from flexflag.config import LARGE_CHANGE_A, LARGE_CHANGE_ALTERNATIVES_A
 from flexflag.evaluate import (
@@ -87,6 +88,19 @@ def main() -> None:
         out["thresholds"][f"{thr:g}"] = res
         print(f"threshold {thr:g} A done", flush=True)
 
+    # Confound check: does pocket pLDDT still rank pockets within pocket-size tertiles?
+    y = rmsd > LARGE_CHANGE_A
+    tertile = pd.qcut(ds.n_site, 3, labels=["small", "medium", "large"])
+    lines += ["### Pocket pLDDT within pocket-size tertiles (> 2 Å, in-sample)", ""]
+    out["size_tertiles"] = {}
+    for name in ("small", "medium", "large"):
+        sel = (tertile == name).to_numpy()
+        auc = roc_auc_score(y[sel], -X.site_plddt_mean.to_numpy()[sel])
+        sizes = ds.n_site[sel]
+        out["size_tertiles"][name] = {"n": int(sel.sum()), "n_positive": int(y[sel].sum()),
+                                      "auroc_low_plddt": float(auc)}  # fmt: skip
+        lines.append(f"- {name} pockets ({sizes.min()}–{sizes.max()} residues, n = {sel.sum()}, "
+                     f"{y[sel].sum()} moving): AUROC {auc:.3f}")  # fmt: skip
     (RESULTS / "pocket_metrics.json").write_text(json.dumps(out, indent=2))
     (RESULTS / "pocket_metrics.md").write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines))

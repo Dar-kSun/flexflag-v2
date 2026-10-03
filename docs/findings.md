@@ -138,3 +138,72 @@ label version should consider a size-normalised RMSD.
   which a Cα label misses.
 - **More pairs per protein:** label each protein by its maximum or median change
   across several ligands, rather than one pair.
+
+---
+
+## v0.2: pocket level (pre-declared in `docs/plan-v0.2-pocket.md`, commit a301a49)
+
+All numbers from `scripts/03_pocket.py` and `scripts/04_pocket_model.py`.
+929 of 933 proteins had their pocket map onto the AlphaFold model.
+
+**A. Which conformation does AlphaFold return?** For moving pockets (> 2 Å, n = 101),
+the AlphaFold model is closer to holo than to apo in 80% of cases (median site RMSD
+0.60 Å to holo, 2.47 Å to apo). Across all proteins it is 57%, as expected when most
+pockets barely move.
+
+**C. Confident but moving:** 71% of moving pockets have pocket pLDDT > 90, and 97%
+are > 70. For comparison, 89% of non-moving pockets are > 90.
+
+**B. Pocket-conditioned flag**, 5-fold cluster CV:
+
+| > 2 Å | AUROC |
+|---|---|
+| Pocket mean pLDDT | 0.686 [0.630, 0.739] |
+| Pocket model (6 pocket + 23 whole-protein features) | 0.716 [0.655, 0.767] |
+| Pocket size alone (confound reference) | 0.614 [0.553, 0.671] |
+
+The pocket model minus pocket pLDDT is +0.029 [−0.034, +0.091]: no reliable gain.
+Pocket pLDDT holds within pocket-size tertiles (AUROC 0.685 / 0.738 / 0.652 for
+small / medium / large), and correlates only weakly with pocket size (Spearman
+−0.19).
+
+**Added after the plan (labelled as such):** the AlphaFold-state analysis split by
+AlphaFold2's training cutoff. Only 9 discovery-set moving pockets have a post-cutoff
+holo, too few, which motivated v0.3.
+
+## v0.3: external validation (pre-declared in `docs/plan-v0.3-external.md`, commit ad7767c)
+
+All numbers from `scripts/05_external_dataset.py` and `scripts/06_external_eval.py`.
+
+**Set:** 971 proteins with a valid pair → 833 labelled; 84 (10.1%) move > 2 Å.
+Main drops: too few pocket residues resolved in the apo (85 pairs), no AlphaFold DB
+model (51 proteins), peptide ligands (36 pairs). 30% human. Holo structures all
+released ≥ 2019-01-01. 658 proteins are UniProt accessions not in the discovery set;
+480 have no discovery protein in their 30% cluster.
+
+**Frozen rules on the external set, > 2 Å:**
+
+| Subset | n (moving) | Whole-protein pLDDT | Pocket pLDDT | Pocket model |
+|---|---|---|---|---|
+| All | 833 (84) | 0.440 [0.379, 0.503] | 0.763 [0.710, 0.811] | 0.791 [0.736, 0.840] |
+| New UniProt | 658 (58) | 0.462 | 0.743 [0.684, 0.801] | 0.786 |
+| New 30% cluster | 480 (46) | 0.481 | 0.714 [0.640, 0.785] | 0.749 |
+
+The pocket result replicates, and is no weaker than in discovery CV. It is somewhat
+weaker on the most distant proteins (0.71) but still well clear of chance.
+Whole-protein pLDDT stays at or below chance throughout.
+
+**AlphaFold state, external:** for moving pockets, AlphaFold is closer to holo in 69%
+of cases (n = 84; median 0.92 Å to holo, 2.54 Å to apo). With apo released before the
+cutoff it is 70% (n = 40); after, 68% (n = 44). No holo here can have been in
+AlphaFold2's training set. The holo preference is therefore not mainly memorisation
+of the bound entry, though it is lower than on the discovery set (80%).
+
+**What did not go as expected:**
+
+- The PAE hinge features (v0.1), expected to be the strongest signal, contributed
+  nothing.
+- Adenylate kinase, the textbook flexible enzyme, is missed by the pocket rule
+  ("moderate", pocket pLDDT 94.7). Confident rigid-domain closures are a blind spot.
+- The richer pocket model never reliably beat the one-number rule. The CLI therefore
+  uses the rule.
