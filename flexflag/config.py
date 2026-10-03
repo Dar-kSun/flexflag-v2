@@ -1,10 +1,18 @@
 """Every tunable number in one place, so results can quote them exactly."""
 
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
-CACHE_DIR = DATA_DIR / "cache"
+# Downloads cache: data/cache/ in a repo checkout; ~/.cache/flexflag for an installed
+# package (where ROOT is site-packages). FLEXFLAG_CACHE overrides both.
+if os.environ.get("FLEXFLAG_CACHE"):
+    CACHE_DIR = Path(os.environ["FLEXFLAG_CACHE"])
+elif (ROOT / "pyproject.toml").exists():
+    CACHE_DIR = DATA_DIR / "cache"
+else:
+    CACHE_DIR = Path.home() / ".cache" / "flexflag"
 
 # Pair list derived from APObind's apobind_all.csv (see docs/data-choice.md).
 PAIRS_CSV = DATA_DIR / "apobind_pairs.csv"
