@@ -24,3 +24,6 @@ data/cache/
 Thumbs.db
 .vscode/
 .idea/
+
+# APObind's full CSV (no licence file upstream); only the slim pair list is committed
+data/apobind_all.csv
