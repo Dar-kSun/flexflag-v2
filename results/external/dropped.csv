@@ -1,0 +1,263 @@
+uniprot,reason,holo_id,apo_id
+A0A024B7W1,no AF-A0A024B7W1-F1 entry,,
+A0A059WLS9,no AF-A0A059WLS9-F1 entry,,
+A0A097BW12,no AFDB F1 model,,
+A0A0H3GU89,no small-molecule ligand (peptide ligands are out of scope),8k8l,8k8k
+A0A0H3GU89,no candidate pair could be labelled,,
+A0A0H3JRH8,only 22/31 site residues present in apo,8eni,3v8j
+A0A0H3JRH8,no candidate pair could be labelled,,
+A0A0R6L508,no small-molecule ligand (peptide ligands are out of scope),7yjq,6li5
+A0A0S0VKY7,no AFDB F1 model,,
+A0A1U9AK63,no AF-A0A1U9AK63-F1 entry,,
+A0A221ZS22,no AFDB F1 model,,
+A0A2P1G738,no AFDB F1 model,,
+A0A2X0SE53,no AF-A0A2X0SE53-F1 entry,,
+A0A344X2I6,no AFDB F1 model,,
+A0A3A5LBF0,only 22/31 site residues present in apo,6oru,3rkx
+A0A3A5LBF0,no candidate pair could be labelled,,
+A0A7H0DNF0,no AFDB F1 model,,
+A0A7S9SVX7,no AFDB F1 model,,
+A0A868BQY3,no AFDB F1 model,,
+A0ABQ3NKM7,no AFDB F1 model,,
+A0ABX0YZE6,no AFDB F1 model,,
+A0ABY3GUT8,no AFDB F1 model,,
+A0ACD6BB00,no AFDB F1 model,,
+A0ACD7IZS4,no AFDB F1 model,,
+A0ACG8APN2,no AFDB F1 model,,
+A0B757,no small-molecule ligand (peptide ligands are out of scope),7c8n,9wcv
+A0B757,no small-molecule ligand (peptide ligands are out of scope),7c8o,9wcv
+A0B757,no small-molecule ligand (peptide ligands are out of scope),7cnv,9wcv
+A0B757,no candidate pair could be labelled,,
+A0R6S0,only 17/25 site residues present in apo,7wmz,7wmw
+A0R6S0,no candidate pair could be labelled,,
+A1E4A3,no AFDB F1 model,,
+A2RI36,binding site has 2 residues,6i8n,9h9y
+A2RI36,only 3/4 site residues present in apo,6r1l,9h9y
+A2RI36,only 4/7 site residues present in apo,7qz6,9h9y
+A2RI36,no candidate pair could be labelled,,
+A6NHX0,no small-molecule ligand (peptide ligands are out of scope),9kpg,9kpb
+A6NHX0,no candidate pair could be labelled,,
+A9XG43,no AFDB F1 model,,
+B2Y6C9,no AF-B2Y6C9-F1 entry,,
+B5L5W7,only 15/20 site residues present in apo,8eo6,8eo7
+B5L5W7,no candidate pair could be labelled,,
+B6V311,no AFDB F1 model,,
+C5B159,no small-molecule ligand (peptide ligands are out of scope),9c8z,9c8w
+C5B159,no small-molecule ligand (peptide ligands are out of scope),9c90,9c8w
+C5B159,no candidate pair could be labelled,,
+D0MDR1,no small-molecule ligand (peptide ligands are out of scope),8wgl,8wgk
+D0MDR1,no candidate pair could be labelled,,
+D9IEF7,no AFDB F1 model,,
+E2ESL7,no AF-E2ESL7-F1 entry,,
+E5ATN9,no AFDB F1 model,,
+E5D8F2,no AF-E5D8F2-F1 entry,,
+F1QSF9,no AFDB F1 model,,
+F4Y2B0,no AFDB F1 model,,
+G3FFN6,no AFDB F1 model,,
+G3M8F4,no AFDB F1 model,,
+K4L8Z7,no AFDB F1 model,,
+K4L9I6,no AFDB F1 model,,
+K9N7C7,no AFDB F1 model,,
+M5AAG8,no AFDB F1 model,,
+O00757,only 8/16 site residues present in apo,5q0c,5et5
+O00757,no candidate pair could be labelled,,
+O25536,only 0/8 site residues present in apo,8hrv,8k6w
+O25536,no candidate pair could be labelled,,
+O31539,no small-molecule ligand (peptide ligands are out of scope),6nq7,4pgr
+O31539,no candidate pair could be labelled,,
+O38885,no AFDB F1 model,,
+O43598,only 11/14 site residues present in apo,9da2,8os9
+O75884,no small-molecule ligand (peptide ligands are out of scope),7oex,9fcr
+O75884,no candidate pair could be labelled,,
+O95363,no small-molecule ligand (peptide ligands are out of scope),8p8x,5mgv
+O95363,no candidate pair could be labelled,,
+P00282,only 4/6 site residues present in apo,6mjr,1e65
+P00282,only 5/7 site residues present in apo,6mjs,1e65
+P00282,only 4/6 site residues present in apo,6mjt,1e65
+P00282,no candidate pair could be labelled,,
+P00383,only 3/4 site residues present in apo,9cum,2gqv
+P00720,no AFDB F1 model,,
+P00782,no small-molecule ligand (peptide ligands are out of scope),7am8,1gnv
+P00782,no candidate pair could be labelled,,
+P00805,binding site has 2 residues,6pa8,7r57
+P00805,no candidate pair could be labelled,,
+P00888,no small-molecule ligand (peptide ligands are out of scope),6agm,6agl
+P00888,no candidate pair could be labelled,,
+P01584,only 7/10 site residues present in apo,5r8e,4gai
+P01584,only 7/10 site residues present in apo,5r8m,4gai
+P01584,only 7/10 site residues present in apo,5r8q,4gai
+P01584,no candidate pair could be labelled,,
+P02791,no small-molecule ligand (peptide ligands are out of scope),8b7l,2za7
+P02866,only 3/4 site residues present in apo,8wmg,1apn
+P02911,no small-molecule ligand (peptide ligands are out of scope),6mla,2lao
+P02911,no small-molecule ligand (peptide ligands are out of scope),6mlj,2lao
+P02911,no small-molecule ligand (peptide ligands are out of scope),6mlp,2lao
+P02911,no candidate pair could be labelled,,
+P03147,no AFDB F1 model,,
+P03211,no AF-P03211-F1 entry,,
+P03313,no AFDB F1 model,,
+P03366,no AFDB F1 model,,
+P03367,no AFDB F1 model,,
+P03950,no small-molecule ligand (peptide ligands are out of scope),7npm,5eop
+P03950,no small-molecule ligand (peptide ligands are out of scope),8oo3,5eop
+P03950,no small-molecule ligand (peptide ligands are out of scope),8oo4,5eop
+P03950,no candidate pair could be labelled,,
+P04483,only 5/11 site residues present in apo,9dt5,3fk6
+P04483,no candidate pair could be labelled,,
+P04585,no AF-P04585-F1 entry,,
+P04629,only 19/26 site residues present in apo,6nss,4f0i
+P06968,only 0/8 site residues present in apo,6hde,1dup
+P06968,no candidate pair could be labelled,,
+P07445,only 12/17 site residues present in apo,7ry4,6f54
+P08168,only 7/10 site residues present in apo,7jxa,3ugu
+P08168,no candidate pair could be labelled,,
+P09467,only 9/15 site residues present in apo,5pzr,7wvb
+P09467,only 11/16 site residues present in apo,7c9q,7wvb
+P09467,only 12/17 site residues present in apo,7wjv,7wvb
+P09467,no candidate pair could be labelled,,
+P09651,only 6/8 site residues present in apo,9f4g,1l3k
+P09651,only 7/10 site residues present in apo,9f4h,1l3k
+P0A6L0,only 9/15 site residues present in apo,9fd8,1p1x
+P0A6L0,only 10/15 site residues present in apo,9fd9,1p1x
+P0AA25,only 0/14 site residues present in apo,6slo,4x43
+P0AA25,no candidate pair could be labelled,,
+P0ABE7,only 15/21 site residues present in apo,6dyf,5yo6
+P0ABE7,only 15/21 site residues present in apo,7lsj,5yo6
+P0ABE7,only 13/19 site residues present in apo,7mk4,5yo6
+P0ABE7,no candidate pair could be labelled,,
+P0AD27,only 0/15 site residues present in apo,6xlp,5i5h
+P0AD27,no candidate pair could be labelled,,
+P0AEX9,only 7/11 site residues present in apo,7mq6,3kjt
+P0AEX9,no candidate pair could be labelled,,
+P0C6U6,no AFDB F1 model,,
+P0C6U8,no AFDB F1 model,,
+P0C6W4,no AF-P0C6W4-F1 entry,,
+P0C6X7,no AF-P0C6X7-F1 entry,,
+P0DPI0,only 6/8 site residues present in apo,8rvh,8rvi
+P0DPI0,no candidate pair could be labelled,,
+P0DTC1,no AF-P0DTC1-F1 entry,,
+P0DTC9,no AF-P0DTC9-F1 entry,,
+P0DTD1,no AF-P0DTD1-F1 entry,,
+P12493,no AFDB F1 model,,
+P12497,no AFDB F1 model,,
+P14336,no AF-P14336-F1 entry,,
+P15090,only 18/23 site residues present in apo,7g0z,3rzy
+P16442,only 14/19 site residues present in apo,6gx0,6bjj
+P16442,only 10/14 site residues present in apo,6gx1,6bjj
+P16442,only 9/17 site residues present in apo,6gx2,6bjj
+P16442,no candidate pair could be labelled,,
+P22535,no AFDB F1 model,,
+P23467,AFDB model longer than 1500,,
+P24481,only 11/14 site residues present in apo,6f6t,6h2o
+P24481,only 11/14 site residues present in apo,6hqf,6h2o
+P24481,only 11/14 site residues present in apo,9rsb,6h2o
+P24481,no candidate pair could be labelled,,
+P24821,AFDB model longer than 1500,,
+P25054,no AFDB F1 model,,
+P26663,no AFDB F1 model,,
+P27282,no AF-P27282-F1 entry,,
+P29373,only 16/21 site residues present in apo,6mpk,3d95
+P32092,no AF-P32092-F1 entry,,
+P32455,only 10/13 site residues present in apo,6k1z,1dg3
+P32455,no candidate pair could be labelled,,
+P36969,no AFDB F1 model,,
+P42212,only 3/4 site residues present in apo,8dta,6l27
+P42212,no candidate pair could be labelled,,
+P45984,only 16/21 site residues present in apo,7n8t,7cml
+P45984,no candidate pair could be labelled,,
+P49761,only 13/20 site residues present in apo,6z53,2exe
+P49761,only 13/20 site residues present in apo,6z54,2exe
+P49761,only 11/16 site residues present in apo,6z55,2exe
+P49761,no candidate pair could be labelled,,
+P50405,only 9/12 site residues present in apo,6vyn,7mbk
+P50405,only 8/11 site residues present in apo,6vzd,7mbk
+P50405,only 9/14 site residues present in apo,6w1b,7mbk
+P50405,no candidate pair could be labelled,,
+P51449,only 15/26 site residues present in apo,6t4x,5k38
+P51449,only 15/26 site residues present in apo,7np5,5k38
+P51449,only 15/26 site residues present in apo,7npc,5k38
+P51449,no candidate pair could be labelled,,
+P51532,AFDB model longer than 1500,,
+P73954,only 9/12 site residues present in apo,7r30,5o3s
+P73954,only 9/18 site residues present in apo,7r31,5o3s
+P73954,only 9/12 site residues present in apo,7r32,5o3s
+P73954,no candidate pair could be labelled,,
+P80188,only 5/14 site residues present in apo,6z2c,6gqz
+P80188,only 6/20 site residues present in apo,8uyn,6gqz
+P80188,only 6/19 site residues present in apo,8uz9,6gqz
+P80188,no candidate pair could be labelled,,
+P9WKH3,only 18/24 site residues present in apo,6ds7,5uq4
+P9WKH3,only 18/23 site residues present in apo,6ds8,5uq4
+P9WKH3,only 22/30 site residues present in apo,6ple,5uq4
+P9WKH3,no candidate pair could be labelled,,
+Q01225,no AF-Q01225-F1 entry,,
+Q01468,only 7/17 site residues present in apo,9hzi,4otb
+Q01468,no candidate pair could be labelled,,
+Q06124,no small-molecule ligand (peptide ligands are out of scope),9eha,9z70
+Q12830,no AFDB F1 model,,
+Q12888,AFDB model longer than 1500,,
+Q16555,binding site has 2 residues,7x68,5x1a
+Q18A65,no small-molecule ligand (peptide ligands are out of scope),6hni,6hnk
+Q18A65,no candidate pair could be labelled,,
+Q1H2G7,no small-molecule ligand (peptide ligands are out of scope),9vy4,9vy3
+Q1H2G7,no small-molecule ligand (peptide ligands are out of scope),9vy5,9vy3
+Q1H2G7,no small-molecule ligand (peptide ligands are out of scope),9vy9,9vy3
+Q1H2G7,no candidate pair could be labelled,,
+Q2SWW9,only 3/19 site residues present in apo,9hk7,9hkc
+Q2SWW9,only 3/19 site residues present in apo,9hk9,9hkc
+Q2SWW9,only 23/29 site residues present in apo,9hkb,9hkc
+Q2SWW9,no candidate pair could be labelled,,
+Q2VPQ0,only 14/25 site residues present in apo,9jjv,9jju
+Q2VPQ0,only 14/23 site residues present in apo,9jjw,9jju
+Q2VPQ0,no candidate pair could be labelled,,
+Q32ZE1,no AF-Q32ZE1-F1 entry,,
+Q5FLN0,no small-molecule ligand (peptide ligands are out of scope),7qfk,7qfj
+Q5FLN0,no candidate pair could be labelled,,
+Q5JF30,only 3/4 site residues present in apo,8hh0,6iu0
+Q5JF30,no candidate pair could be labelled,,
+Q5XX06,no AF-Q5XX06-F1 entry,,
+Q65199,no AF-Q65199-F1 entry,,
+Q68T42,no AF-Q68T42-F1 entry,,
+Q6DNL8,no AFDB F1 model,,
+Q6NAM1,only 13/17 site residues present in apo,9ue2,5k3d
+Q6NAM1,no candidate pair could be labelled,,
+Q6XGD4,only 18/25 site residues present in apo,9ioq,9iom
+Q6XGD4,no candidate pair could be labelled,,
+Q73MJ7,no small-molecule ligand (peptide ligands are out of scope),8t7l,8t7k
+Q73MJ7,no candidate pair could be labelled,,
+Q756Z6,only 3/34 site residues present in apo,6rpu,4xwu
+Q756Z6,no candidate pair could be labelled,,
+Q7SIG4,only 15/20 site residues present in apo,7zp7,4o5s
+Q7SIG4,no candidate pair could be labelled,,
+Q83883,no AF-Q83883-F1 entry,,
+Q86WV6,only 11/15 site residues present in apo,7kw1,4ef5
+Q86WV6,only 13/17 site residues present in apo,8a2k,4ef5
+Q86WV6,only 10/14 site residues present in apo,8p01,4ef5
+Q86WV6,no candidate pair could be labelled,,
+Q8C9A2,no small-molecule ligand (peptide ligands are out of scope),6ozl,5aoy
+Q8JUX6,no AF-Q8JUX6-F1 entry,,
+Q8LK69,no small-molecule ligand (peptide ligands are out of scope),7vs6,7yaq
+Q8LK69,no candidate pair could be labelled,,
+Q8NFD5,AFDB model longer than 1500,,
+Q8WWQ0,AFDB model longer than 1500,,
+Q9AIU0,only 12/16 site residues present in apo,7kd8,2xdn
+Q9IK90,no AF-Q9IK90-F1 entry,,
+Q9JIH7,AFDB model longer than 1500,,
+Q9K499,only 14/18 site residues present in apo,8su3,6axo
+Q9UM07,only 14/20 site residues present in apo,9dpz,3apm
+Q9UM73,AFDB model longer than 1500,,
+Q9WZ62,no small-molecule ligand (peptide ligands are out of scope),6q3u,6ggp
+Q9WZ62,no small-molecule ligand (peptide ligands are out of scope),6svf,6ggp
+Q9WZ62,no small-molecule ligand (peptide ligands are out of scope),7a99,6ggp
+Q9WZ62,no candidate pair could be labelled,,
+Q9Y3D6,only 3/5 site residues present in apo,9aye,9avc
+Q9Y3D6,no candidate pair could be labelled,,
+Q9Z2L7,no small-molecule ligand (peptide ligands are out of scope),6rpy,6rpx
+Q9Z2L7,no candidate pair could be labelled,,
+Q9ZAG3,only 9/16 site residues present in apo,7xee,4xbx
+Q9ZAG3,only 11/20 site residues present in apo,7xef,4xbx
+Q9ZAG3,no candidate pair could be labelled,,
+T2B7E1,no small-molecule ligand (peptide ligands are out of scope),7ek4,6ls2
+T2B7E1,no candidate pair could be labelled,,
+W8QF84,no small-molecule ligand (peptide ligands are out of scope),6swj,6swk
+W8QF84,no candidate pair could be labelled,,

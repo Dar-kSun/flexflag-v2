@@ -1,0 +1,6 @@
+holo_search: 40469
+apo_search: 16821
+uniprot_with_both: 1636
+holo_with_real_ligand: 12285
+uniprot_with_pair: 971
+labelled: 833
