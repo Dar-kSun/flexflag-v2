@@ -20,9 +20,8 @@ N_SPLITS = 5
 SEED = 0
 
 
-def features_table(ds: pd.DataFrame) -> pd.DataFrame:
-    """Whole-protein features per protein, cached in results/features.csv."""
-    path = RESULTS / "features.csv"
+def features_table(ds: pd.DataFrame, path=RESULTS / "features.csv") -> pd.DataFrame:
+    """Whole-protein features per protein, cached at `path`."""
     if path.exists():
         cached = pd.read_csv(path, index_col="uniprot")
         if set(ds.uniprot) <= set(cached.index):
@@ -34,9 +33,8 @@ def features_table(ds: pd.DataFrame) -> pd.DataFrame:
     return feats
 
 
-def clusters_table(ds: pd.DataFrame) -> pd.Series:
-    """MMseqs2 cluster per protein, cached in results/clusters.csv."""
-    path = RESULTS / "clusters.csv"
+def clusters_table(ds: pd.DataFrame, path=RESULTS / "clusters.csv") -> pd.Series:
+    """MMseqs2 cluster per protein, cached at `path`."""
     if path.exists():
         cached = pd.read_csv(path, index_col="uniprot").cluster
         if set(ds.uniprot) <= set(cached.index):
