@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+
+# Structure downloads and caches (large, re-fetchable)
+data/raw/
+data/cache/
+*.cif
+*.cif.gz
+*.pdb
+*.pdb.gz
+*.ent.gz
+!tests/fixtures/*.cif
+!tests/fixtures/*.pdb
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
