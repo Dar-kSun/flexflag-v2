@@ -42,3 +42,9 @@ def entry_info(uniprot: str) -> dict:
         "description": e.get("uniprotDescription"),
         "af_version": e.get("latestVersion"),
     }
+
+
+def model_path(uniprot: str):
+    """Local path to the AlphaFold DB model (mmCIF) for the F1 entry."""
+    url = _entry(uniprot)["cifUrl"]
+    return fetch(url, "afdb_models", url.rsplit("/", 1)[-1])
