@@ -64,7 +64,11 @@ def entry_details(ids: list[str], batch: int = 300) -> dict[str, dict]:
             path.write_text(json.dumps(data))
         for e in data:
             res = (e["rcsb_entry_info"] or {}).get("resolution_combined") or [None]
-            chems = [n["nonpolymer_comp"]["chem_comp"] for n in e["nonpolymer_entities"] or []]
+            chems = [
+                n["nonpolymer_comp"]["chem_comp"]
+                for n in e["nonpolymer_entities"] or []
+                if n.get("nonpolymer_comp") and n["nonpolymer_comp"].get("chem_comp")
+            ]
             comps = [(c["id"], c["formula_weight"]) for c in chems]
             out[e["rcsb_id"].lower()] = {
                 "resolution": res[0],
