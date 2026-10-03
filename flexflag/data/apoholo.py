@@ -72,7 +72,15 @@ def sifts_chain_map() -> dict[tuple[str, str], str]:
     Chains mapping to several accessions (chimeras) are left out.
     """
     path = fetch(SIFTS_TSV, "sifts", "pdb_chain_uniprot.tsv.gz")
-    df = pd.read_csv(path, sep="\t", comment="#", usecols=["PDB", "CHAIN", "SP_PRIMARY"])
+    # keep_default_na=False: chain IDs such as "NA" are real names, not missing values.
+    df = pd.read_csv(
+        path,
+        sep="\t",
+        comment="#",
+        usecols=["PDB", "CHAIN", "SP_PRIMARY"],
+        dtype=str,
+        keep_default_na=False,
+    )
     df = df.drop_duplicates(["PDB", "CHAIN", "SP_PRIMARY"])
     df = df[~df.duplicated(["PDB", "CHAIN"], keep=False)]
     return dict(zip(zip(df.PDB, df.CHAIN.astype(str), strict=False), df.SP_PRIMARY, strict=False))

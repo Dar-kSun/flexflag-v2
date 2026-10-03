@@ -14,10 +14,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import pandas as pd
 
 from flexflag.config import ROOT
-from flexflag.data import alphafold
-from flexflag.data.apoholo import load_pairs, sifts_chain_map, structure_path
-from flexflag.data.cache import NotFound
-from flexflag.labels import LabelError, site_rmsd
+from flexflag.data.apoholo import load_pairs, sifts_chain_map
+from flexflag.dataset import label_protein
 
 RESULTS = ROOT / "results"
 
@@ -25,8 +23,6 @@ RESULTS = ROOT / "results"
 MIN_TMSCORE = 0.5  # below this the apo is probably not the same fold
 MIN_IDENTITY = 0.9
 MIN_COVERAGE = 0.9
-MAX_CANDIDATES = 3  # pairs tried per protein before giving up
-MAX_LENGTH = 1500  # AFDB PAE files get very large; also keeps the set to single chains
 
 
 def prefilter(pairs: pd.DataFrame, chain_map) -> tuple[pd.DataFrame, list[dict]]:
@@ -54,52 +50,6 @@ def prefilter(pairs: pd.DataFrame, chain_map) -> tuple[pd.DataFrame, list[dict]]
     pairs = drop(pairs.holo_uniprot.isna(), "holo chains do not map to one UniProt")
     pairs = drop(pairs.holo_uniprot != pairs.apo_uniprot, "apo and holo map to different UniProt")
     return pairs, dropped
-
-
-def label_protein(uniprot: str, candidates: pd.DataFrame) -> tuple[dict | None, list[dict]]:
-    """Try candidate pairs in order; return the first that labels cleanly."""
-    dropped = []
-    try:
-        info = alphafold.entry_info(uniprot)
-        if len(info["sequence"]) > MAX_LENGTH:
-            raise LookupError(f"AFDB model longer than {MAX_LENGTH}")
-        alphafold.plddt(uniprot)
-        alphafold.pae(uniprot)
-    except (NotFound, LookupError) as e:
-        reason = "no AFDB F1 model" if isinstance(e, NotFound) else str(e)
-        return None, [{"uniprot": uniprot, "reason": reason}]
-
-    for _, r in candidates.head(MAX_CANDIDATES).iterrows():
-        try:
-            lab = site_rmsd(
-                structure_path(r.holo_id),
-                r.holo_chains.split(),
-                structure_path(r.apo_id),
-                r.apo_chains.split(),
-            )
-        except (LabelError, NotFound, ValueError, RuntimeError) as e:
-            dropped.append(
-                {"uniprot": uniprot, "holo_id": r.holo_id, "apo_id": r.apo_id, "reason": str(e)}
-            )
-            continue
-        return {
-            "uniprot": uniprot,
-            "holo_id": r.holo_id,
-            "holo_chain": lab.holo_chain,
-            "apo_id": r.apo_id,
-            "apo_chain": lab.apo_chain,
-            "ligand": lab.ligand,
-            "n_site": lab.n_site,
-            "n_matched": lab.n_matched,
-            "site_rmsd": round(lab.rmsd, 3),
-            "length": len(info["sequence"]),
-            "organism": info["organism"],
-            "description": info["description"],
-            "n_apobind_pairs": len(candidates),
-            "sequence": info["sequence"],
-        }, dropped
-    dropped.append({"uniprot": uniprot, "reason": "no candidate pair could be labelled"})
-    return None, dropped
 
 
 def main() -> None:
@@ -142,7 +92,9 @@ def main() -> None:
 
     RESULTS.mkdir(exist_ok=True)
     pd.DataFrame(rows).sort_values("uniprot").to_csv(RESULTS / "dataset.csv", index=False)
-    pd.DataFrame(dropped).to_csv(RESULTS / "dropped.csv", index=False)
+    dropped = pd.DataFrame(dropped)
+    sort_cols = [c for c in ("uniprot", "holo_id", "apo_id", "reason") if c in dropped]
+    dropped.sort_values(sort_cols, na_position="first").to_csv(RESULTS / "dropped.csv", index=False)
     print(f"done: {len(rows)} proteins labelled in {time.perf_counter() - t0:.0f}s")
 
 
