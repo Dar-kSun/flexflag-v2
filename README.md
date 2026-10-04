@@ -172,8 +172,8 @@ Pocket-pLDDT AUROC at 2 Å, discovery / external:
 ### How these analyses were kept honest
 
 Every analysis after v0.1 was **written down and committed before it was run**:
-pocket analysis `a301a49`, external validation `ad7767c`, stress tests `26243c0`,
-overnight analyses `8823f37`. The git history shows each plan before its results.
+pocket analysis `f66384c`, external validation `28757f6`, stress tests `6a83c01`,
+overnight analyses `23038f4`. The git history shows each plan before its results.
 
 Deviations, all after the plans were written:
 
