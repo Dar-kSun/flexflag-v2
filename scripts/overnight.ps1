@@ -24,12 +24,14 @@ Add-Type -Namespace Win32 -Name Power -MemberDefinition @'
 
 function Step($Name, [scriptblock]$Body) {
     $t0 = Get-Date
-    "`n===== $Name  (started $t0) =====" | Tee-Object -FilePath $Log -Append
-    & $Body 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $Log -Append
+    # Out-File -Encoding utf8: Tee-Object in Windows PowerShell 5 writes UTF-16.
+    "`n===== $Name  (started $t0) =====" | Out-File $Log -Append -Encoding utf8
+    & $Body 2>&1 | ForEach-Object { "$_" } | Tee-Object -Variable lines | Out-Host
+    $lines | Out-File $Log -Append -Encoding utf8
     $code = $LASTEXITCODE
     $mins = [math]::Round(((Get-Date) - $t0).TotalMinutes, 1)
     $line = "{0,-34} exit={1,-4} {2} min" -f $Name, $code, $mins
-    $line | Tee-Object -FilePath $Status -Append
+    $line | Out-File $Status -Append -Encoding utf8
 }
 
 "overnight run started $(Get-Date)" | Out-File $Status -Encoding utf8
@@ -47,5 +49,5 @@ Step "3 ESM-2 vs pocket pLDDT"         { & $Py -u scripts\12_esm_eval.py }
 Step "4 many ligands per protein"      { & $Py -u scripts\13_multipair.py --workers 24 }
 Step "5 tests still pass"              { & $Py -m pytest -q }
 
-"overnight run finished $(Get-Date)" | Tee-Object -FilePath $Status -Append
+"overnight run finished $(Get-Date)" | Out-File $Status -Append -Encoding utf8
 [Win32.Power]::SetThreadExecutionState([uint32]"0x80000000") | Out-Null      # back to normal

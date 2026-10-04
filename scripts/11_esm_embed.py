@@ -11,6 +11,7 @@ results/robustness/pockets.json (AlphaFold residue numbers of each 5 Å pocket).
 import argparse
 import importlib.util
 import json
+import os
 import time
 from concurrent.futures import ThreadPoolExecutor
 
@@ -51,6 +52,8 @@ def write_pockets(ds: pd.DataFrame) -> None:
 
 
 def embed_all(ds: pd.DataFrame, limit: int | None) -> None:
+    # fair-esm checkpoints are full pickles; torch >= 2.6 refuses them by default.
+    os.environ.setdefault("TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD", "1")
     import esm
     import torch
 
