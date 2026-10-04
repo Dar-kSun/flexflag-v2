@@ -23,6 +23,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.5"]
+# Validation experiments only (scripts/11-14); the tool itself needs none of these.
+esm = ["torch>=2.6", "fair-esm>=2.0"]
+docking = ["meeko>=0.6", "rdkit>=2024.3", "openbabel-wheel>=3.1"]
 
 [project.scripts]
 flexflag = "flexflag.cli:app"
