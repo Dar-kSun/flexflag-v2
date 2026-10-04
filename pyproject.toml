@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "flexflag"
-version = "0.1.0"
+version = "0.1.1"
 description = "Cheap triage flag for proteins that change shape between apo and holo states."
 readme = "README.md"
 license = "MIT"

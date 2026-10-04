@@ -9,7 +9,7 @@ chance** (AUROC 0.44 vs 0.76).
 
 ![Risk of pocket change by pocket pLDDT band, discovery and external sets](results/pocket_plddt_bands.png)
 
-> **Status: v0.1.0.** Datasets, labels, cluster-aware evaluation, the pLDDT baseline
+> **Status: v0.1.1.** Datasets, labels, cluster-aware evaluation, the pLDDT baseline
 > comparison, pre-declared external validation, pre-declared stress tests and the
 > `flexflag check` CLI are done and reproducible (`bash scripts/rebuild_all.sh`). See
 > [Status](#status) for what is scoped out.
@@ -291,7 +291,7 @@ runs: `powershell -ExecutionPolicy Bypass -File scripts\overnight.ps1`.
 
 ## Status
 
-**v0.1.0.** Done: both datasets, labels, cluster-aware CV with a leakage assertion,
+**v0.1.1.** Done: both datasets, labels, cluster-aware CV with a leakage assertion,
 pLDDT baselines, pocket-level analysis, pre-declared external validation, calibration,
 threshold sensitivity, the stress tests in Section 4, and the CLI.
 
