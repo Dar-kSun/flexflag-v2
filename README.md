@@ -27,7 +27,7 @@ It flags risk. It does not predict the other conformation.
 ## Quickstart
 
 ```bash
-pip install git+https://github.com/Dar-kSun/flexflag     # Python ≥ 3.11
+pip install git+https://github.com/Dar-kSun/flexflag-v2  # Python ≥ 3.11
 flexflag check Q9HWI0 --from-pdb 8evw          # pocket = residues near the ligand in 8EVW
 flexflag check P69441 --residues 13,31,35-38   # or give pocket residues (UniProt numbering)
 ```
