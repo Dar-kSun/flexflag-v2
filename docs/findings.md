@@ -141,6 +141,51 @@ Pocket-pLDDT AUROC at 2 Å, discovery / external (`results/robustness/`):
   The first pocket's pLDDT predicts "any ligand moves" at 0.701 / 0.748 and "most
   ligands move" at 0.666 / 0.756.
 
+## v0.6: docking validation (`plan-v0.6-docking.md`; `scripts/14_docking.py`)
+
+A one-off validation experiment, approved by the project owner. The tool itself does
+not dock. Each protein's crystal ligand was re-docked with AutoDock Vina 1.2.7 into
+three receptors superposed on the holo pocket: the holo crystal chain (control), the
+apo crystal chain, and the AlphaFold DB model. Success = top pose within 2 Å of the
+crystal pose. Full numbers are in `results/docking/summary.md`.
+
+**Scope (amended before outcomes were examined):** external set only, random order
+(seed 0), no new protein after 2.5 hours. 187 proteins were started; the last one, still
+running about an hour later, was stopped and is not counted. Of the 186 recorded, 25 had covalent
+ligands, 9 ligands were too large or flexible, and 7 failed for technical reasons
+(Vina rejected the receptor, the ligand file could not be parsed, or a timeout). That
+leaves **145 proteins docked in all three receptors**.
+
+| Receptor | Top-1 success | Any of top 3 |
+|---|---|---|
+| Holo crystal | 27.6% | 47.6% |
+| Apo crystal | 3.4% | 8.3% |
+| AlphaFold model | 9.7% | 15.2% |
+
+Re-docking into the holo crystal works less often here than in curated benchmarks.
+These ligands include fragments, cofactor-site ligands and pockets at chain
+interfaces. Docking into either the apo crystal or the AlphaFold model fails most of
+the time, whatever the pocket does.
+
+**Primary endpoint** (AUROC for AlphaFold-model failure, among the 40 proteins where
+holo docking succeeded; 30 failures):
+
+| Predictor | AUROC |
+|---|---|
+| Pocket pLDDT | 0.593 [0.379, 0.793] |
+| Whole-protein pLDDT | 0.587 [0.359, 0.809] |
+| Measured apo–holo pocket RMSD (oracle) | 0.627 [0.429, 0.813] |
+
+**Verdict: inconclusive.** The pre-declared bar was a lower CI bound above 0.5 and a
+result better than whole-protein pLDDT. Neither is met. The sample is too small to
+show a difference; even the oracle, the measured pocket movement, is not
+distinguishable from chance here. Structure-caused failures (AlphaFold fails, holo
+succeeds) were 8.7% in the highest pocket-pLDDT band against 20–25% in the other
+bands, and 35.7% for moving pockets against 19.1% for the rest. Those trends point the
+expected way but rest on very few proteins. What this run does show is that Vina
+re-docking into AlphaFold models fails far more often than into the holo structure,
+for most pockets.
+
 ## What did not go as expected
 
 - The PAE hinge features contributed nothing.
@@ -149,6 +194,8 @@ Pocket-pLDDT AUROC at 2 Å, discovery / external (`results/robustness/`):
 - Richer models (29 features, ESM-2) never reliably beat the one-number rule on new
   structures.
 - Ligand-free use with P2Rank works but is clearly weaker.
+- The docking check could not show that the flag predicts docking failure. It was too
+  small, and docking into AlphaFold models failed for most pockets anyway.
 
 ## Deviations from the pre-declared plans
 
@@ -161,6 +208,8 @@ Pocket-pLDDT AUROC at 2 Å, discovery / external (`results/robustness/`):
    2 Å moved from +0.073 [+0.002, +0.142] to +0.046 [−0.027, +0.124], so from
    significant to not.
 2. AlphaFold-state analysis split by release date: added after the v0.2 plan.
-3. E1 was re-run after the overnight attempt failed on a truncated checkpoint download.
+3. Docking (v0.6) was time-boxed to 2.5 hours on the external set, in random order. This
+   was decided before any docking outcome was examined (amendment in the plan).
+4. E1 was re-run after the overnight attempt failed on a truncated checkpoint download.
    A GPU memory-fragmentation stall on a laptop GPU was then fixed (cache clearing,
    CPU fallback). Neither changes the method.

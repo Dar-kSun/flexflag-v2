@@ -168,6 +168,7 @@ Pocket-pLDDT AUROC at 2 Å, discovery / external:
 | **Many ligands per protein** (apo fixed, up to 10 holos) | 88–89% of proteins with ≥ 3 ligands are consistent; "any ligand moves": 0.701 / 0.748 | Pocket change is mostly a property of the protein, not the ligand |
 | **No ligand at all:** P2Rank pocket on the AlphaFold model (top-1) | 0.577 / 0.670; P2Rank's top pocket is the true one in ~65% | **Works, but weaker.** Best when you know your pocket |
 | **Protein language model:** ESM-2 650M pocket embedding (+ pLDDT) | ESM alone 0.613 / 0.599; ESM + pLDDT vs pLDDT: +0.007 / **−0.065** [−0.131, −0.002] | ESM adds nothing and overfits families; the simple rule wins |
+| **Docking** (Vina, crystal ligand re-docked into holo / apo / AlphaFold; external random sample, 145 proteins; [plan](docs/plan-v0.6-docking.md)) | Success 28% / 3% / 10%. Pocket pLDDT vs AlphaFold failure where holo docking worked: **0.593 [0.379, 0.793]** (30/40), same as whole-protein pLDDT (0.587) | **Inconclusive, underpowered.** Does not meet the pre-declared bar; see [findings](docs/findings.md) |
 
 ### How these analyses were kept honest
 
@@ -286,8 +287,13 @@ runs: `powershell -ExecutionPolicy Bypass -File scripts\overnight.ps1`.
   differences can create or hide apparent motion.
 - **Clustering at 30% identity** is the standard but does not remove all remote
   homology.
-- This repo flags risk. **It does not predict conformations, run docking, or make any
-  claim about drug efficacy or clinical outcomes.**
+- **Not yet shown to predict docking failure.** In a time-boxed docking check (145
+  external proteins, only 40 where holo re-docking worked), pocket pLDDT did not
+  reliably predict which AlphaFold-model dockings fail. The test was too small to
+  settle it either way.
+- This repo flags risk. **The tool does not predict conformations, run docking, or
+  make any claim about drug efficacy or clinical outcomes.** (Docking was used once,
+  as a validation experiment.)
 
 ## Status
 
@@ -297,9 +303,9 @@ threshold sensitivity, the stress tests in Section 4, and the CLI.
 
 Next:
 
-- **A docking test:** do flagged pockets actually make docking into the AlphaFold model
-  fail more often? This is the most direct usefulness test, deliberately out of scope
-  so far.
+- **A full-size docking test.** The time-boxed run (2.5 h, 145 proteins) was
+  inconclusive. The full external set (`scripts/overnight_docking.ps1`, about 10 h)
+  would roughly quadruple the primary-endpoint sample.
 - Features aimed at hinge closures (the adenylate kinase failure mode).
 - Better ligand-free pocket selection than P2Rank's top-1.
 - Side-chain-specific labels.
