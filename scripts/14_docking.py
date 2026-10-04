@@ -57,6 +57,28 @@ BOX_MIN = 20.0
 EXHAUSTIVENESS = 8
 SUCCESS_RMSD = 2.0
 SEED = 0
+RUN_COLUMNS = [
+    "uniprot",
+    "dataset",
+    "holo_id",
+    "apo_id",
+    "site_rmsd",
+    "ligand",
+    "n_heavy",
+    "n_rotatable",
+    "cofactors",
+    "pocket_ca_rmsd_apo",
+    "pocket_ca_rmsd_alphafold",
+    "receptor",
+    "pose_rmsd",
+    "best_top3_rmsd",
+    "vina_score",
+    "success",
+    "success_top3",
+    "seconds",
+    "skipped",
+    "error",
+]
 
 
 def vina_exe() -> str:
@@ -200,7 +222,10 @@ def docked_rmsds(out_pdbqt: Path, ref) -> tuple[list[float], float]:
 
 
 def dock_one(row: dict) -> list[dict]:
+    from rdkit import RDLogger
     from rdkit.Chem import Descriptors
+
+    RDLogger.DisableLog("rdApp.*")  # per-molecule typing warnings, not errors
 
     out = []
     base = {
@@ -325,6 +350,8 @@ def main() -> None:
     ap.add_argument("--only", nargs="*", help="UniProt accessions (testing)")
     ap.add_argument("--summarise", action="store_true", help="only rewrite summary.md")
     ap.add_argument("--runs", default=str(OUT / "runs.csv"), help="per-docking output CSV")
+    ap.add_argument("--datasets", nargs="*", default=["external", "apobind"])
+    ap.add_argument("--hours", type=float, help="stop starting new proteins after this long")
     args = ap.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
     runs_path = Path(args.runs)
@@ -332,22 +359,32 @@ def main() -> None:
         summarise(pd.read_csv(runs_path))
         return
     ds = proteins()
+    ds = ds[ds.dataset.isin(args.datasets)]
     if args.only:
         ds = ds[ds.uniprot.isin(args.only)]
     done = set()
     if runs_path.exists():
         prev = pd.read_csv(runs_path)
         done = set(zip(prev.dataset, prev.uniprot, strict=True))
+    # Random order (seed 0), primary dataset first: a run cut short by the time budget
+    # is then a random sample, not the alphabetically first proteins.
+    ds = ds.sample(frac=1, random_state=SEED)
+    ds = ds.sort_values("dataset", key=lambda s: s != "external", kind="stable")
     todo = [r for r in ds.to_dict("records") if (r["dataset"], r["uniprot"]) not in done]
-    todo.sort(key=lambda r: r["dataset"] != "external")  # primary endpoint first
     if args.limit:
         todo = todo[: args.limit]
     print(f"{len(todo)} proteins to dock ({len(done)} already done)", flush=True)
     t0 = time.perf_counter()
+    budget = args.hours * 3600 if args.hours else float("inf")
     with ProcessPoolExecutor(args.workers) as pool:
         futures = [pool.submit(dock_one, r) for r in todo]
+        stopped = False
         for k, fut in enumerate(as_completed(futures), 1):
-            rows = pd.DataFrame(fut.result())
+            if fut.cancelled():
+                continue
+            # A fixed column order: rows from skipped and docked proteins differ in
+            # which fields they have, and appended CSV rows must line up.
+            rows = pd.DataFrame(fut.result()).reindex(columns=RUN_COLUMNS)
             rows.to_csv(
                 runs_path,
                 mode="a",
@@ -358,6 +395,12 @@ def main() -> None:
             )
             if k % 20 == 0 or k == len(todo):
                 print(f"{k}/{len(todo)} proteins, {time.perf_counter() - t0:.0f}s", flush=True)
+            if not stopped and time.perf_counter() - t0 > budget:
+                stopped = True
+                n = sum(f.cancel() for f in futures)
+                print(
+                    f"time budget reached: {n} proteins not started; finishing the rest", flush=True
+                )
 
 
 def _auroc(y, score, groups, rng, n_boot=1000):

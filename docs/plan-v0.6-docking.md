@@ -57,3 +57,19 @@ Per dataset, over proteins where all three receptors docked:
 Interpretation fixed now: the flag is useful for docking if (3b) has a lower CI bound
 above 0.5 on the external set and exceeds whole-protein pLDDT. If not, the README says
 so in the results.
+
+## Amendment (2026-10-04, before any docking outcome was examined)
+
+The full run needs about 10 hours, which did not fit the time available. The run was
+stopped after 11 proteins, whose outcomes were not looked at. Those rows were then
+discarded, because of a CSV bug (rows with different fields were appended under one
+header, so values were misaligned; fixed by writing a fixed column set). Changes:
+
+- **External set only** (it carries the primary endpoint). APObind is not docked.
+- Proteins are processed in a **random order (seed 0)**, and no new protein is started
+  after a **2.5-hour budget**. The docked proteins are therefore a random sample of the
+  external set. The sample size is reported with every number.
+- Docking settings and endpoints are unchanged.
+- Vina results were not bit-reproducible between runs on this machine: tiny numerical
+  differences, and occasionally two near-tied top poses swap order. This affects all
+  three receptors alike.
