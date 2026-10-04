@@ -54,6 +54,8 @@ def write_pockets(ds: pd.DataFrame) -> None:
 def embed_all(ds: pd.DataFrame, limit: int | None) -> None:
     # fair-esm checkpoints are full pickles; torch >= 2.6 refuses them by default.
     os.environ.setdefault("TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD", "1")
+    # On a laptop the display shares GPU memory; avoid fragmentation as lengths vary.
+    os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
     import esm
     import torch
 
@@ -64,6 +66,20 @@ def embed_all(ds: pd.DataFrame, limit: int | None) -> None:
     if device == "cuda":
         model = model.half()
     convert = alphabet.get_batch_converter()
+    cpu_model = None  # float32 copy, made only if a sequence does not fit on the GPU
+
+    def represent(tokens):
+        nonlocal cpu_model
+        with torch.no_grad():
+            if device == "cuda":
+                try:
+                    return model(tokens.to(device), repr_layers=[33])["representations"][33]
+                except torch.cuda.OutOfMemoryError:
+                    torch.cuda.empty_cache()
+            if cpu_model is None:
+                cpu_model = esm.pretrained.esm2_t33_650M_UR50D()[0].eval()
+            return cpu_model(tokens, repr_layers=[33])["representations"][33]
+
     seqs = ds.drop_duplicates("uniprot").set_index("uniprot").sequence
     todo = [
         u
@@ -84,13 +100,18 @@ def embed_all(ds: pd.DataFrame, limit: int | None) -> None:
         for s in starts:
             chunk = seq[s : s + WINDOW]
             _, _, tokens = convert([(u, chunk)])
-            with torch.no_grad():
-                rep = model(tokens.to(device), repr_layers=[33])["representations"][33]
+            rep = represent(tokens)
             total[s : s + len(chunk)] += rep[0, 1 : len(chunk) + 1].float().cpu().numpy()
             count[s : s + len(chunk)] += 1
+            del rep
         np.save(ESM_DIR / f"{u}.npy", (total / count[:, None]).astype(np.float16))
-        if k % 100 == 0 or k == len(todo):
-            print(f"{k}/{len(todo)} embedded, {time.perf_counter() - t0:.0f}s", flush=True)
+        if device == "cuda":
+            torch.cuda.empty_cache()
+        if k % 25 == 0 or k == len(todo):
+            print(
+                f"{k}/{len(todo)} embedded (last: {len(seq)} aa), {time.perf_counter() - t0:.0f}s",
+                flush=True,
+            )
 
 
 def main() -> None:

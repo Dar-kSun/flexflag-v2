@@ -1,110 +1,110 @@
 {
   "description": "P(binding-site C-alpha RMSD > 2 A between apo and holo) from the mean AlphaFold pLDDT over the pocket residues. Fit on APObind; validated on PDB-2019+.",
   "threshold_A": 2.0,
-  "intercept": 6.604630781536499,
-  "coef_site_plddt": -0.0933841434056794,
+  "intercept": 6.821383896561411,
+  "coef_site_plddt": -0.09572703513444403,
   "band_edges": [
-    91.7906,
-    94.58304000000001,
-    96.4324,
-    97.94212
+    91.8074,
+    94.58328,
+    96.44188,
+    97.94448
   ],
   "bands": {
     "apobind": [
       {
         "band": "< 91.8",
-        "n": 186,
-        "frac_gt_2A": 0.20967741935483872,
+        "n": 183,
+        "frac_gt_2A": 0.21311475409836064,
         "n_gt_2A": 39
       },
       {
         "band": "91.8–94.6",
-        "n": 186,
-        "frac_gt_2A": 0.13440860215053763,
-        "n_gt_2A": 25
+        "n": 182,
+        "frac_gt_2A": 0.12637362637362637,
+        "n_gt_2A": 23
       },
       {
         "band": "94.6–96.4",
-        "n": 185,
-        "frac_gt_2A": 0.10270270270270271,
+        "n": 182,
+        "frac_gt_2A": 0.1043956043956044,
         "n_gt_2A": 19
       },
       {
         "band": "96.4–97.9",
-        "n": 186,
-        "frac_gt_2A": 0.06989247311827956,
+        "n": 182,
+        "frac_gt_2A": 0.07142857142857142,
         "n_gt_2A": 13
       },
       {
         "band": "> 97.9",
-        "n": 186,
-        "frac_gt_2A": 0.026881720430107527,
+        "n": 183,
+        "frac_gt_2A": 0.0273224043715847,
         "n_gt_2A": 5
       }
     ],
     "external": [
       {
         "band": "< 91.8",
-        "n": 139,
-        "frac_gt_2A": 0.23741007194244604,
+        "n": 140,
+        "frac_gt_2A": 0.2357142857142857,
         "n_gt_2A": 33
       },
       {
         "band": "91.8–94.6",
-        "n": 146,
-        "frac_gt_2A": 0.18493150684931506,
+        "n": 145,
+        "frac_gt_2A": 0.18620689655172415,
         "n_gt_2A": 27
       },
       {
         "band": "94.6–96.4",
-        "n": 163,
-        "frac_gt_2A": 0.09202453987730061,
+        "n": 167,
+        "frac_gt_2A": 0.08982035928143713,
         "n_gt_2A": 15
       },
       {
         "band": "96.4–97.9",
-        "n": 215,
-        "frac_gt_2A": 0.027906976744186046,
+        "n": 209,
+        "frac_gt_2A": 0.028708133971291867,
         "n_gt_2A": 6
       },
       {
         "band": "> 97.9",
-        "n": 170,
-        "frac_gt_2A": 0.01764705882352941,
+        "n": 172,
+        "frac_gt_2A": 0.01744186046511628,
         "n_gt_2A": 3
       }
     ]
   },
-  "n_apobind": 929,
+  "n_apobind": 912,
   "n_external": 833,
   "external_auroc_site_plddt": {
-    "value": 0.7626200012715367,
+    "value": 0.7622385402759234,
     "ci95": [
-      0.7103672234066597,
-      0.8106882214968986
+      0.7129371166477486,
+      0.810106515224273
     ]
   },
   "external_auroc_protein_plddt": {
     "value": 0.44047619047619047,
     "ci95": [
-      0.37905490633366096,
-      0.5031747720385497
+      0.3772140919425402,
+      0.49806755017354915
     ]
   },
   "alphafold_state_moving_external": {
     "n": 84,
     "frac_af_closer_to_holo": 0.6904761904761905,
-    "median_af_holo": 0.9196,
-    "median_af_apo": 2.5389,
-    "median_apo_holo": 2.8007999999999997,
+    "median_af_holo": 0.9196004870854626,
+    "median_af_apo": 2.538916708607796,
+    "median_apo_holo": 2.8008365035571035,
     "frac_site_plddt_gt90": 0.6904761904761905
   },
   "alphafold_state_moving_apobind": {
-    "n": 101,
-    "frac_af_closer_to_holo": 0.801980198019802,
+    "n": 99,
+    "frac_af_closer_to_holo": 0.797979797979798,
     "median_af_holo": 0.6048,
-    "median_af_apo": 2.4691,
-    "median_apo_holo": 2.5958,
-    "frac_site_plddt_gt90": 0.7128712871287128
+    "median_af_apo": 2.4779,
+    "median_apo_holo": 2.6364,
+    "frac_site_plddt_gt90": 0.7070707070707071
   }
 }

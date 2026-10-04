@@ -4585,6 +4585,8 @@ holo_id,apo_id,reason,uniprot
 4ykk,4yki,no small-molecule ligand (peptide ligands are out of scope),A0A0R4I973
 ,,no candidate pair could be labelled,A0A5P8YI66
 4ofl,3ry3,no small-molecule ligand (peptide ligands are out of scope),A0A5P8YI66
+,,no candidate pair could be labelled,A0A9Q4WVB1
+4yec,3uws,no small-molecule ligand (peptide ligands are out of scope),A0A9Q4WVB1
 ,,no AFDB F1 model,A0ABS8BW93
 ,,no candidate pair could be labelled,A2NHM3
 3uyr,3uo1,no small-molecule ligand (peptide ligands are out of scope),A2NHM3
@@ -4609,6 +4611,9 @@ holo_id,apo_id,reason,uniprot
 6e8m,6e8h,no small-molecule ligand (peptide ligands are out of scope),D3HJY4
 ,,no candidate pair could be labelled,D3Z7P3
 4jkt,3ss3,only 7/10 site residues present in apo,D3Z7P3
+,,no candidate pair could be labelled,D4Z2G1
+1g42,1mj5,no small-molecule ligand (peptide ligands are out of scope),D4Z2G1
+1g5f,1mj5,no small-molecule ligand (peptide ligands are out of scope),D4Z2G1
 ,,no candidate pair could be labelled,E9P5T5
 4io3,4io2,no small-molecule ligand (peptide ligands are out of scope),E9P5T5
 4io5,4io2,no small-molecule ligand (peptide ligands are out of scope),E9P5T5
@@ -4711,13 +4716,30 @@ holo_id,apo_id,reason,uniprot
 3c94,1fxx,no small-molecule ligand (peptide ligands are out of scope),P04995
 ,,no candidate pair could be labelled,P05981
 1p57,3t2n,only 8/18 site residues present in apo,P05981
+,,no candidate pair could be labelled,P06026
+4apr,2apr,no small-molecule ligand (peptide ligands are out of scope),P06026
+5apr,2apr,no small-molecule ligand (peptide ligands are out of scope),P06026
+6apr,2apr,no small-molecule ligand (peptide ligands are out of scope),P06026
+,,no candidate pair could be labelled,P06202
+1b0h,1b05,no small-molecule ligand (peptide ligands are out of scope),P06202
+1b1h,1b05,no small-molecule ligand (peptide ligands are out of scope),P06202
+1b2h,1b05,no small-molecule ligand (peptide ligands are out of scope),P06202
+,,no candidate pair could be labelled,P06239
+1bhf,5mtm,no small-molecule ligand (peptide ligands are out of scope),P06239
+1lkk,5mtm,no small-molecule ligand (peptide ligands are out of scope),P06239
+1lkl,5mtm,no small-molecule ligand (peptide ligands are out of scope),P06239
 ,,no candidate pair could be labelled,P06709
 4wf2,1bia,only 20/27 site residues present in apo,P06709
 ,,no candidate pair could be labelled,P06873
 1bjr,1ht3,no small-molecule ligand (peptide ligands are out of scope),P06873
 ,,no AF-P06935-F1 entry,P06935
+1lyb,1lya,no small-molecule ligand (peptide ligands are out of scope),P07339
 ,,no candidate pair could be labelled,P07737
 1awi,1cjf,no small-molecule ligand (peptide ligands are out of scope),P07737
+,,no candidate pair could be labelled,P07813
+3zjt,3zgz,no small-molecule ligand (peptide ligands are out of scope),P07813
+3zju,3zgz,no small-molecule ligand (peptide ligands are out of scope),P07813
+3zjv,3zgz,no small-molecule ligand (peptide ligands are out of scope),P07813
 ,,AFDB model longer than 1500,P07814
 ,,no candidate pair could be labelled,P07824
 1t4s,1p8o,no small-molecule ligand (peptide ligands are out of scope),P07824
@@ -4745,6 +4767,8 @@ holo_id,apo_id,reason,uniprot
 1ox9,1yfn,no small-molecule ligand (peptide ligands are out of scope),P0AFZ3
 ,,no AFDB F1 model,P0C6U8
 ,,no AF-P0C6X7-F1 entry,P0C6X7
+,,no candidate pair could be labelled,P0CY29
+2h6t,2h6s,no small-molecule ligand (peptide ligands are out of scope),P0CY29
 ,,no AF-P0DTH5-F1 entry,P0DTH5
 ,,no candidate pair could be labelled,P11474
 1xb7,2pjl,no small-molecule ligand (peptide ligands are out of scope),P11474
@@ -4770,6 +4794,8 @@ holo_id,apo_id,reason,uniprot
 ,,no AFDB F1 model,P16753
 ,,no candidate pair could be labelled,P20789
 3zev,4buo,no small-molecule ligand (peptide ligands are out of scope),P20789
+,,no candidate pair could be labelled,P21980
+2q3z,1kv3,no small-molecule ligand (peptide ligands are out of scope),P21980
 1kl3,1kff,no small-molecule ligand (peptide ligands are out of scope),P22629
 1kl5,1kl4,no small-molecule ligand (peptide ligands are out of scope),P22629
 ,,no candidate pair could be labelled,P22681
@@ -4821,6 +4847,14 @@ holo_id,apo_id,reason,uniprot
 4j78,4j73,no small-molecule ligand (peptide ligands are out of scope),P41811
 4j81,4j73,no small-molecule ligand (peptide ligands are out of scope),P41811
 1s50,3g3g,no small-molecule ligand (peptide ligands are out of scope),P42260
+,,no candidate pair could be labelled,P42574
+4jje,1qx3,no small-molecule ligand (peptide ligands are out of scope),P42574
+4pry,1qx3,no small-molecule ligand (peptide ligands are out of scope),P42574
+4ps0,1qx3,no small-molecule ligand (peptide ligands are out of scope),P42574
+,,no candidate pair could be labelled,P42575
+3r6g,2p2c,no small-molecule ligand (peptide ligands are out of scope),P42575
+3r7n,2p2c,no small-molecule ligand (peptide ligands are out of scope),P42575
+3rjm,2p2c,no small-molecule ligand (peptide ligands are out of scope),P42575
 ,,no candidate pair could be labelled,P43621
 5fjx,5fjz,no small-molecule ligand (peptide ligands are out of scope),P43621
 ,,AFDB model longer than 1500,P49327
@@ -4839,6 +4873,10 @@ holo_id,apo_id,reason,uniprot
 4h3b,3tti,no small-molecule ligand (peptide ligands are out of scope),P53779
 ,,no candidate pair could be labelled,P55197
 5dah,5dag,no small-molecule ligand (peptide ligands are out of scope),P55197
+,,no candidate pair could be labelled,P55210
+2ql5,1i51,no small-molecule ligand (peptide ligands are out of scope),P55210
+2ql7,1i51,no small-molecule ligand (peptide ligands are out of scope),P55210
+2ql9,1i51,no small-molecule ligand (peptide ligands are out of scope),P55210
 ,,no candidate pair could be labelled,P56218
 1wkm,2dfi,no small-molecule ligand (peptide ligands are out of scope),P56218
 1std,1idp,only 19/24 site residues present in apo,P56221
@@ -4850,7 +4888,9 @@ holo_id,apo_id,reason,uniprot
 1x07,5cqb,only 12/16 site residues present in apo,P60472
 ,,no candidate pair could be labelled,P60615
 1abt,1hc9,no small-molecule ligand (peptide ligands are out of scope),P60615
+,,no candidate pair could be labelled,P61964
 3p4f,5m23,no small-molecule ligand (peptide ligands are out of scope),P61964
+4gm8,2gnq,no small-molecule ligand (peptide ligands are out of scope),P61964
 4y7r,5m23,no small-molecule ligand (peptide ligands are out of scope),P61964
 ,,no candidate pair could be labelled,P61981
 6fel,5d3e,no small-molecule ligand (peptide ligands are out of scope),P61981
@@ -4877,10 +4917,15 @@ holo_id,apo_id,reason,uniprot
 ,,no candidate pair could be labelled,P96257
 6h1u,6h2t,no small-molecule ligand (peptide ligands are out of scope),P96257
 6h2t,6h1u,no small-molecule ligand (peptide ligands are out of scope),P96257
+1tl9,1kxr,no small-molecule ligand (peptide ligands are out of scope),P97571
 ,,no candidate pair could be labelled,P98170
 4j44,4j3y,no small-molecule ligand (peptide ligands are out of scope),P98170
 4j45,4j3y,no small-molecule ligand (peptide ligands are out of scope),P98170
 4j46,4j3y,no small-molecule ligand (peptide ligands are out of scope),P98170
+,,no candidate pair could be labelled,P9WPC9
+3wdc,3wdb,no small-molecule ligand (peptide ligands are out of scope),P9WPC9
+3wdd,3wdb,no small-molecule ligand (peptide ligands are out of scope),P9WPC9
+3wde,3wdb,no small-molecule ligand (peptide ligands are out of scope),P9WPC9
 ,,no candidate pair could be labelled,Q00684
 6g86,5xw4,no small-molecule ligand (peptide ligands are out of scope),Q00684
 ,,AFDB model longer than 1500,Q00955
@@ -4899,6 +4944,7 @@ holo_id,apo_id,reason,uniprot
 ,,no candidate pair could be labelled,Q06121
 1lbf,5k7j,only 16/24 site residues present in apo,Q06121
 3tkz,4je4,no small-molecule ligand (peptide ligands are out of scope),Q06124
+4kx8,4kx7,no small-molecule ligand (peptide ligands are out of scope),Q07075
 ,,no candidate pair could be labelled,Q07832
 5dms,5x3s,no small-molecule ligand (peptide ligands are out of scope),Q07832
 ,,no candidate pair could be labelled,Q09028
@@ -4916,6 +4962,8 @@ holo_id,apo_id,reason,uniprot
 ,,AFDB model longer than 1500,Q13009
 ,,no candidate pair could be labelled,Q13283
 4fcm,3q90,no small-molecule ligand (peptide ligands are out of scope),Q13283
+,,no candidate pair could be labelled,Q13432
+3rbq,4goj,no small-molecule ligand (peptide ligands are out of scope),Q13432
 5x54,6rog,no small-molecule ligand (peptide ligands are out of scope),Q14145
 6fmp,6rog,no small-molecule ligand (peptide ligands are out of scope),Q14145
 ,,no candidate pair could be labelled,Q14498
@@ -4959,9 +5007,13 @@ holo_id,apo_id,reason,uniprot
 2yns,4b8j,no small-molecule ligand (peptide ligands are out of scope),Q71VM4
 4b8p,4b8j,no small-molecule ligand (peptide ligands are out of scope),Q71VM4
 3ip6,3ip5,no small-molecule ligand (peptide ligands are out of scope),Q7CX36
+,,no candidate pair could be labelled,Q7KZF4
+3omc,2hqe,no small-molecule ligand (peptide ligands are out of scope),Q7KZF4
+3omg,2hqe,no small-molecule ligand (peptide ligands are out of scope),Q7KZF4
 ,,no AF-Q80J95-F1 entry,Q80J95
 ,,no AF-Q83883-F1 entry,Q83883
 ,,AFDB model longer than 1500,Q86U86
+1w9u,1w9p,no small-molecule ligand (peptide ligands are out of scope),Q873X9
 ,,no candidate pair could be labelled,Q8IUH5
 5w7i,3eu9,no small-molecule ligand (peptide ligands are out of scope),Q8IUH5
 5w7j,5w7i,no small-molecule ligand (peptide ligands are out of scope),Q8IUH5
@@ -5008,8 +5060,10 @@ holo_id,apo_id,reason,uniprot
 2i3h,1tw6,no small-molecule ligand (peptide ligands are out of scope),Q96CA5
 ,,no candidate pair could be labelled,Q96EP0
 4p0a,4juy,no small-molecule ligand (peptide ligands are out of scope),Q96EP0
+,,no candidate pair could be labelled,Q96ES7
 3mea,3mew,no small-molecule ligand (peptide ligands are out of scope),Q96ES7
 3met,3mew,no small-molecule ligand (peptide ligands are out of scope),Q96ES7
+5c0m,3mew,no small-molecule ligand (peptide ligands are out of scope),Q96ES7
 ,,no candidate pair could be labelled,Q96I25
 5lso,6hip,no small-molecule ligand (peptide ligands are out of scope),Q96I25
 ,,AFDB model longer than 1500,Q96PN6
@@ -5049,6 +5103,8 @@ holo_id,apo_id,reason,uniprot
 4joe,6xnj,no small-molecule ligand (peptide ligands are out of scope),Q9HD26
 4jof,6xnj,no small-molecule ligand (peptide ligands are out of scope),Q9HD26
 5eb2,4yna,no small-molecule ligand (peptide ligands are out of scope),Q9I4L4
+,,no candidate pair could be labelled,Q9I7C4
+4tsz,4tr8,no small-molecule ligand (peptide ligands are out of scope),Q9I7C4
 ,,AFDB model longer than 1500,Q9JLU4
 3zst,3zss,no small-molecule ligand (peptide ligands are out of scope),Q9L1K2
 ,,no candidate pair could be labelled,Q9NY33

@@ -67,3 +67,13 @@ def test_align_indices_skips_gaps_and_mismatches():
     assert 3 not in m  # L has no partner
     assert m[4] == 3  # A shifts left by one
     assert all(holo[i] == apo[j] for i, j in m.items())
+
+
+def test_residue_inside_a_peptide_chain_is_not_a_ligand():
+    # 5BTR: sirtuin-1 with a Fluor-de-Lys substrate peptide (FDL is a residue of the
+    # peptide chain D) and resveratrol (STL). The peptide is out of scope.
+    from flexflag.labels import find_ligand, read_model
+
+    ligand, _, chain = find_ligand(read_model(FIX / "5btr_AD.cif"), ["A"])
+    assert ligand.name == "STL"
+    assert chain == "A"

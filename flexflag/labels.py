@@ -94,6 +94,10 @@ def find_ligand(model: gemmi.Model, chains, cutoff: float = SITE_CUTOFF_A):
         for res in ch:
             if res.het_flag != "H" or res.name in NOT_LIGANDS or len(res) < MIN_LIGAND_ATOMS:
                 continue
+            # Non-standard residues inside a polymer chain (peptide inhibitors such as
+            # statine, or Fluor-de-Lys in 5BTR) are peptide ligands: out of scope.
+            if res.entity_type == gemmi.EntityType.Polymer:
+                continue
             if gemmi.find_tabulated_residue(res.name) is not None and (
                 gemmi.find_tabulated_residue(res.name).is_amino_acid()
             ):
