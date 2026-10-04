@@ -1,3 +1,3 @@
 """flexflag: triage flag for conformational change between apo and holo states."""
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"

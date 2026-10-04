@@ -9,7 +9,7 @@ chance** (AUROC 0.44 vs 0.76).
 
 ![Risk of pocket change by pocket pLDDT band, discovery and external sets](results/pocket_plddt_bands.png)
 
-> **Status: v0.1.1.** Datasets, labels, cluster-aware evaluation, the pLDDT baseline
+> **Status: v0.1.2.** Datasets, labels, cluster-aware evaluation, the pLDDT baseline
 > comparison, pre-declared external validation, pre-declared stress tests and the
 > `flexflag check` CLI are done and reproducible (`bash scripts/rebuild_all.sh`). See
 > [Status](#status) for what is scoped out.
@@ -252,6 +252,7 @@ Individual steps, in order:
 | `10_p2rank.py` | Ligand-free mode (needs Java 17+ and P2Rank 2.5) |
 | `11_esm_embed.py`, `12_esm_eval.py` | ESM-2 embeddings (GPU recommended; `pip install torch fair-esm`) and evaluation |
 | `13_multipair.py` | Many ligands per protein |
+| `14_docking.py` | Docking validation with AutoDock Vina 1.2.7 (`pip install -e ".[docking]"` plus the Vina executable; `--hours` sets a time budget) |
 
 `data/apobind_pairs.csv` (the APObind pair list) is committed. Regenerating it from
 APObind's `apobind_all.csv` needs one manual browser download (see
@@ -297,7 +298,7 @@ runs: `powershell -ExecutionPolicy Bypass -File scripts\overnight.ps1`.
 
 ## Status
 
-**v0.1.1.** Done: both datasets, labels, cluster-aware CV with a leakage assertion,
+**v0.1.2.** Done: both datasets, labels, cluster-aware CV with a leakage assertion,
 pLDDT baselines, pocket-level analysis, pre-declared external validation, calibration,
 threshold sensitivity, the stress tests in Section 4, and the CLI.
 
